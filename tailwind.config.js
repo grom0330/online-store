@@ -3,7 +3,12 @@
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    extend: {}
+    extend: {
+      spacing: {
+        '7xl': '1040px'
+      },
+      fontFamily: { seaweed: ['Seaweed Script', 'sans-serif'] }
+    }
   },
   plugins: []
 }
