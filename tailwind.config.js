@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       spacing: {
-        '7xl': '1040px'
+        '7xl': '1200px'
       },
       fontFamily: { seaweed: ['Seaweed Script', 'sans-serif'] }
     }
