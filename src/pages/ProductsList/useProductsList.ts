@@ -1,33 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { Product } from 'dummyjson-api/models'
 import { getProducts } from 'dummyjson-api'
-
-type IState =
-  | { status: 'loading'; products?: Product[] }
-  | { status: 'ok'; products: Product[] }
-  | { status: 'error'; error: string }
-  | { status: 'fetching'; products: Product[] }
-
-const DEFAULT_STATE: IState = {
-  status: 'loading',
-  products: []
-}
+import { useProductsStore } from 'store'
 
 const useProductsList = () => {
   const [searchParams] = useSearchParams()
-  const [state, setState] = useState<IState>(DEFAULT_STATE)
+
+  const s = useProductsStore((state) => state)
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setState({ status: 'loading' })
+      s.setState({ status: 'loading' })
 
       try {
         const data = await getProducts(searchParams.toString())
-        setState({ status: 'ok', products: data.products })
+        s.setState({ status: 'ok', products: data.products })
       } catch (e) {
-        setState({
+        s.setState({
           status: 'error',
           error: e instanceof Error ? e.message : 'Something went wrong.'
         })
@@ -37,7 +27,7 @@ const useProductsList = () => {
     fetchProducts()
   }, [searchParams])
 
-  return state
+  return s
 }
 
 export default useProductsList
