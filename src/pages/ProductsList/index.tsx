@@ -1,18 +1,34 @@
 import Loader from 'components/Loader'
 import PageTitle from 'components/PageTitle'
-import { Product } from 'dummyjson-api/models'
+import useProductsList from './useProductsList'
 
-type Props = {
-  products?: Product[]
-  loading: boolean
+const ProductsList = () => {
+  const s = useProductsList()
+
+  if (s.status === 'loading') {
+    return (
+      <>
+        <PageTitle text="Products List" />
+        <Loader />
+      </>
+    )
+  }
+
+  if (s.status === 'error') {
+    return (
+      <>
+        <PageTitle text="Products List" />
+        <div>{s.error}</div>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <PageTitle text="Products List" />
+      {s.products && s.products.map((product) => <div key={product.id}>{product.title}</div>)}
+    </>
+  )
 }
-
-const ProductsList = (p: Props) => (
-  <div>
-    <PageTitle text="Products List" />
-    {p.loading && <Loader />}
-    {p.products && p.products.map((product) => <div key={product.id}>{product.title}</div>)}
-  </div>
-)
 
 export default ProductsList

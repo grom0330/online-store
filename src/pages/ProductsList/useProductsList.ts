@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 import { Product } from 'dummyjson-api/models'
 import { getProducts } from 'dummyjson-api'
 
 type IState =
-  | { status: 'ok'; products: Product[] }
-  | { status: 'failed'; error: string }
   | { status: 'loading'; products?: Product[] }
+  | { status: 'ok'; products: Product[] }
+  | { status: 'error'; error: string }
+  | { status: 'fetching'; products: Product[] }
 
 const DEFAULT_STATE: IState = {
   status: 'loading',
   products: []
 }
 
-const useApp = () => {
+const useProductsList = () => {
+  const [searchParams] = useSearchParams()
   const [state, setState] = useState<IState>(DEFAULT_STATE)
 
   useEffect(() => {
@@ -21,20 +24,20 @@ const useApp = () => {
       setState({ status: 'loading' })
 
       try {
-        const data = await getProducts()
+        const data = await getProducts(searchParams.toString())
         setState({ status: 'ok', products: data.products })
       } catch (e) {
         setState({
-          status: 'failed',
+          status: 'error',
           error: e instanceof Error ? e.message : 'Something went wrong.'
         })
       }
     }
 
     fetchProducts()
-  }, [])
+  }, [searchParams])
 
   return state
 }
 
-export default useApp
+export default useProductsList
