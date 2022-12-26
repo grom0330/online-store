@@ -1,26 +1,34 @@
-import { useEffect, useState } from 'react'
-
-import { Product } from 'dummyjson-api/models'
+import Loader from 'components/Loader'
 import PageTitle from 'components/PageTitle'
-import { getProducts } from 'dummyjson-api'
+import useProductsList from './useProductsList'
 
-export default function ProductsList() {
-  const [products, setProducts] = useState<Product[]>()
+const ProductsList = () => {
+  const s = useProductsList()
 
-  // TODO: move to the application root
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const data = await getProducts()
-      setProducts(data.products)
-    }
+  if (s.status === 'loading') {
+    return (
+      <>
+        <PageTitle text="Products List" />
+        <Loader />
+      </>
+    )
+  }
 
-    fetchProducts()
-  }, [])
+  if (s.status === 'error') {
+    return (
+      <>
+        <PageTitle text="Products List" />
+        <div>{s.error}</div>
+      </>
+    )
+  }
 
   return (
-    <div>
+    <>
       <PageTitle text="Products List" />
-      {products && products.map((product) => <div key={product.id}>{product.title}</div>)}
-    </div>
+      {s.products && s.products.map((product) => <div key={product.id}>{product.title}</div>)}
+    </>
   )
 }
+
+export default ProductsList
