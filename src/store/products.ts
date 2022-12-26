@@ -15,5 +15,5 @@ type Handlers = {
 export const useProductsStore = create<ProductsState & Handlers>()((set) => ({
   status: 'loading',
   products: [],
-  setState: (newState: ProductsState) => set(() => newState)
+  setState: (newState) => set(() => newState)
 }))
