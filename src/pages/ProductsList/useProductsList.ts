@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { getProducts } from 'dummyjson-api'
-import { useProductsStore } from 'store'
+import { useProductsStore } from 'store/products'
 
 const useProductsList = () => {
   const [searchParams] = useSearchParams()
