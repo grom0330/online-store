@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { Link } from 'react-router-dom'
 
 import { Product } from 'dummyjson-api/models'
 
@@ -32,10 +33,10 @@ export default function ProductCard(p: Props) {
         <div className="mt-4 flex justify-between">
           <div>
             <h3 className="text-sm text-gray-700">
-              <a href="#">
+              <Link to={`product-details/${p.data.id}`}>
                 <span aria-hidden="true" className="absolute inset-0"></span>
                 {p.data.title}
-              </a>
+              </Link>
             </h3>
             <p className="mt-1 text-sm text-gray-500">{p.data.category}</p>
           </div>

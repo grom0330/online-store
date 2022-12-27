@@ -14,7 +14,7 @@ function ProductsList() {
 
   if (s.status === 'loading') {
     return (
-      <main>
+      <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <Title />
         <Loader />
       </main>
@@ -23,7 +23,7 @@ function ProductsList() {
 
   if (s.status === 'error') {
     return (
-      <main>
+      <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <Title />
         <div>{s.error}</div>
       </main>
