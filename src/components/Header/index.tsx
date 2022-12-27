@@ -1,4 +1,4 @@
-import { useCartStore } from 'store/cart'
+import useCartStore from 'store/cart'
 
 export default function Header() {
   const itemsInCart = useCartStore((state) => state.count)

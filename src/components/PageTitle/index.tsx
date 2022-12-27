@@ -3,5 +3,5 @@ type Props = {
 }
 
 export default function PageTitle(p: Props) {
-  return <h2 className="text-3xl font-bold underline">{p.text}</h2>
+  return <h2 className="text-2xl font-bold tracking-tight text-gray-900">{p.text}</h2>
 }

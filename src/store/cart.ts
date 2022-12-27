@@ -12,7 +12,7 @@ type CartState = {
   removeItem(id: number): void
 }
 
-export const useCartStore = create<CartState>()((set) => ({
+const useCartStore = create<CartState>()((set) => ({
   items: [],
   count: 0,
   addItem: (newItem) =>
@@ -45,3 +45,5 @@ export const useCartStore = create<CartState>()((set) => ({
       return { items, count: state.count - 1 }
     })
 }))
+
+export default useCartStore
