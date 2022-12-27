@@ -1,57 +1,55 @@
 import Loader from 'components/Loader'
 import PageTitle from 'components/PageTitle'
-import { useCartStore } from 'store/cart'
+import ProductCard from 'components/ProductCard'
+
 import useProductsList from './useProductsList'
+import useCartStore from 'store/cart'
 
 const ProductsList = () => {
   const s = useProductsList()
 
+  const productsInCart = useCartStore((state) => state.items)
   const addToCart = useCartStore((state) => state.addItem)
   const removeFromCart = useCartStore((state) => state.removeItem)
 
-  if (s.status === 'loading') {
+  if (s.status === 'loading')
     return (
-      <>
-        <PageTitle text="Products List" />
+      <main>
+        <Title />
         <Loader />
-      </>
+      </main>
     )
-  }
 
   if (s.status === 'error') {
     return (
-      <>
-        <PageTitle text="Products List" />
+      <main>
+        <Title />
         <div>{s.error}</div>
-      </>
+      </main>
     )
   }
 
   return (
-    <>
-      <PageTitle text="Products List" />
-      {s.products &&
-        s.products.map((product) => (
-          <div key={product.id}>
-            <span>{product.title}</span>
+    <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+      <Title />
 
-            <button
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-1 rounded inline-flex items-center"
-              onClick={() => addToCart({ id: product.id, price: product.price })}
-            >
-              +
-            </button>
-
-            <button
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-1 rounded inline-flex items-center"
-              onClick={() => removeFromCart(product.id)}
-            >
-              -
-            </button>
-          </div>
+      <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        {s.products.map((product) => (
+          <ProductCard
+            key={product.id}
+            data={product}
+            inCart={productsInCart.some((item) => item.id === product.id)}
+            onAddToCart={addToCart}
+            onRemoveFromCart={removeFromCart}
+          />
         ))}
-    </>
+      </div>
+    </main>
   )
+}
+
+function Title() {
+  return <PageTitle text="Products List" />
 }
 
 export default ProductsList

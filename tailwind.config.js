@@ -10,5 +10,5 @@ module.exports = {
       fontFamily: { seaweed: ['Seaweed Script', 'sans-serif'] }
     }
   },
-  plugins: []
+  plugins: [require('@tailwindcss/aspect-ratio')]
 }
