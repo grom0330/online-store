@@ -41,7 +41,7 @@ export default function ProductCard(p: Props) {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-900">${p.data.price}</p>
-            <p className="text-sm font-medium text-gray-900">${p.data.discountPercentage}</p>
+            <p className="text-sm font-light text-gray-900">{p.data.discountPercentage}%</p>
           </div>
         </div>
       </div>

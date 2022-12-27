@@ -5,20 +5,21 @@ import ProductCard from 'components/ProductCard'
 import useProductsList from './useProductsList'
 import useCartStore from 'store/cart'
 
-const ProductsList = () => {
+function ProductsList() {
   const s = useProductsList()
 
   const productsInCart = useCartStore((state) => state.items)
   const addToCart = useCartStore((state) => state.addItem)
   const removeFromCart = useCartStore((state) => state.removeItem)
 
-  if (s.status === 'loading')
+  if (s.status === 'loading') {
     return (
       <main>
         <Title />
         <Loader />
       </main>
     )
+  }
 
   if (s.status === 'error') {
     return (
