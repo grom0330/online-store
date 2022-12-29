@@ -5,7 +5,7 @@ import GitLogo from '../../assets/images/GitHub_logo.png'
 const Footer = () => {
   return (
     <footer className="flex justify-center">
-      <div className="flex justify-between items-center w-7xl m-2.5">
+      <div className="flex justify-between items-center w-7xl m-3">
         <a>
           <img src={RsLogo} className="w-24 h-16" />
         </a>

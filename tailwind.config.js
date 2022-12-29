@@ -7,7 +7,10 @@ module.exports = {
       spacing: {
         '7xl': '1200px'
       },
-      fontFamily: { seaweed: ['Seaweed Script', 'sans-serif'] }
+      fontFamily: {
+        seaweed: ['Seaweed Script', 'sans-serif'],
+        philosopher: ['Philosopher', 'sans-serif']
+      }
     }
   },
   plugins: [require('@tailwindcss/aspect-ratio')]
