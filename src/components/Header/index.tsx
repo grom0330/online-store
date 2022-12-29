@@ -15,7 +15,7 @@ export default function Header() {
           <div className="text-purple-600 text-4xl font-bold font-philosopher">Online store</div>
         </div>
         <div className="items-center text-purple-600 text-2xl font-normal font-philosopher">
-          Cart total: {totalPrice}
+          Cart total: ${totalPrice}
         </div>
         <div className="flex gap-4 items-center">
           <img className="w-12 h-12" src={imgCart} />
