@@ -3,7 +3,9 @@ import imgBag from '../../assets/images/shopping-bags.png'
 import imgCart from '../../assets/images/shopping-cart.png'
 
 export default function Header() {
-  const itemsInCart = useCartStore((state) => state.count)
+  const itemsCount = useCartStore((state) => state.count)
+  const items = useCartStore((state) => state.items)
+  const totalPrice = items.reduce((acc, curr) => acc + curr.price, 0)
 
   return (
     <header className="flex justify-center ">
@@ -13,12 +15,12 @@ export default function Header() {
           <div className="text-purple-600 text-4xl font-bold font-philosopher">Online store</div>
         </div>
         <div className="items-center text-purple-600 text-2xl font-normal font-philosopher">
-          Cart total: 2342
+          Cart total: {totalPrice}
         </div>
         <div className="flex gap-4 items-center">
           <img className="w-12 h-12" src={imgCart} />
           <div className="w-8 text-purple-600 text-3xl font-normal font-philosopher">
-            {itemsInCart}
+            {itemsCount}
           </div>
         </div>
       </div>

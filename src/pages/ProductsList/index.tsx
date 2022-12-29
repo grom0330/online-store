@@ -1,56 +1,61 @@
+import { ReactNode } from 'react'
+
 import Loader from 'components/Loader'
 import PageTitle from 'components/PageTitle'
 import ProductCard from 'components/ProductCard'
 
 import useProductsList from './useProductsList'
-import useCartStore from 'store/cart'
 
 function ProductsList() {
-  const s = useProductsList()
+  const p = useProductsList()
 
-  const productsInCart = useCartStore((state) => state.items)
-  const addToCart = useCartStore((state) => state.addItem)
-  const removeFromCart = useCartStore((state) => state.removeItem)
-
-  if (s.status === 'loading') {
+  if (p.status === 'loading') {
     return (
-      <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+      <Main>
         <Title />
         <Loader />
-      </main>
+      </Main>
     )
   }
 
-  if (s.status === 'error') {
+  if (p.status === 'error') {
     return (
-      <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+      <Main>
         <Title />
-        <div>{s.error}</div>
-      </main>
+        <div>{p.error}</div>
+      </Main>
     )
   }
 
   return (
-    <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+    <Main>
       <Title />
 
       <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        {s.products.map((product) => (
+        {p.products.map((product) => (
           <ProductCard
             key={product.id}
             data={product}
-            inCart={productsInCart.some((item) => item.id === product.id)}
-            onAddToCart={addToCart}
-            onRemoveFromCart={removeFromCart}
+            inCart={p.productsInCart.some((item) => item.id === product.id)}
+            onAddToCart={p.addToCart}
+            onRemoveFromCart={p.removeFromCart}
           />
         ))}
       </div>
-    </main>
+    </Main>
   )
 }
 
 function Title() {
   return <PageTitle text="Products List" />
+}
+
+function Main({ children }: { children: ReactNode }) {
+  return (
+    <main className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+      {children}
+    </main>
+  )
 }
 
 export default ProductsList
