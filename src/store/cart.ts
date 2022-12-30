@@ -10,50 +10,42 @@ type CartItem = Pick<Product, 'id' | 'price'> & {
 type CartState = {
   items: CartItem[]
   count: number
-  addItem(item: Omit<CartItem, 'count'>): void
-  removeItem(id: number): void
+  total: number
+  add(item: Omit<CartItem, 'count'>): void
+  remove(id: number): void
+  isInCart(id: number): boolean
 }
 
-const useCartStore = create<CartState>()(
+const useCart = create<CartState>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         items: [],
         count: 0,
-        addItem: (newItem) =>
-          set((state) => {
-            const oldItem = state.items.find((item) => newItem.id == item.id)
-
-            if (oldItem) {
-              oldItem.count += 1
-            } else {
-              state.items = [...state.items, { ...newItem, count: 1 }]
-            }
-
-            return { items: state.items, count: state.count + 1 }
+        total: 0,
+        isInCart: (id) => get().items.some((i) => i.id === id),
+        add: (item) =>
+          set((prev) => {
+            prev.items.push({ ...item, count: 1 })
+            return { items: prev.items, count: prev.count + 1, total: prev.total + item.price }
           }),
-        removeItem: (id) =>
-          set((state) => {
-            const item = state.items.find((item) => item.id === id)
+        remove: (id) =>
+          set((prev) => {
+            const addedItem = prev.items.find((i) => i.id === id)
 
-            if (!item) {
-              return state
-            }
+            if (!addedItem) return prev
 
-            if (item && item.count > 1) {
-              item.count -= 1
-              return { items: state.items, count: state.count - 1 }
-            }
+            prev.items = prev.items.filter((i) => i.id !== addedItem.id)
 
-            const items = state.items.filter((item) => item.id !== id)
-            console.log({ items })
-            return { items, count: state.count - 1 }
+            return { items: prev.items, count: prev.count - 1, total: prev.total - addedItem.price }
           })
       }),
-      { name: 'RSS-OnlineStore-Storage' }
+      {
+        name: 'RSS-OnlineStore-Storage'
+      }
     ),
-    { name: 'RSS-Cart-Store' }
+    { name: 'RSS-CartStore' }
   )
 )
 
-export default useCartStore
+export default useCart

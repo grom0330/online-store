@@ -1,11 +1,11 @@
 import { Products } from './models'
 
-export const getProducts = async (searchParams?: string) => {
-  const result = await fetch(`https://dummyjson.com/products?limit=100&${searchParams}`)
+export const getProducts = async () => {
+  const resp = await fetch(`https://dummyjson.com/products?limit=10&`)
 
-  if (!result.ok) {
-    throw new Error(result.statusText)
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
   }
 
-  return (await result.json()) as Products
+  return (await resp.json()) as Products
 }
