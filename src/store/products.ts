@@ -22,7 +22,7 @@ const useProducts = create<State>()(
       cashe: [],
       products: [],
       filter: (data) => {
-        let filtered = get().products
+        let filtered = get().cashe
 
         if (data.search) {
           filtered = filtered.filter((p) => {
@@ -37,14 +37,12 @@ const useProducts = create<State>()(
               p.category.toLowerCase().includes(search)
             )
           })
-        } else {
-          filtered = [...get().cashe]
         }
 
         if (data.sort) {
           const [field, direction] = (data.sort as string).split('-')
 
-          filtered = filtered.sort((a, b) => {
+          filtered = [...filtered].sort((a, b) => {
             const aValue = a[field as keyof Product] as number
             const bValue = b[field as keyof Product] as number
 
@@ -56,8 +54,6 @@ const useProducts = create<State>()(
             }
             return 0
           })
-        } else {
-          filtered === filtered.sort((a, b) => a.id - b.id)
         }
 
         set({ products: filtered })
