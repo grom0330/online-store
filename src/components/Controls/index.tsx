@@ -87,7 +87,9 @@ export default function Controls() {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="purple"
-            className="w-6 h-6 cursor-pointer hover:fill-purple-500"
+            className={`w-6 h-6 cursor-pointer ${
+              search.get('sm') === 'false' ? 'fill-purple-500' : 'fill-white-500'
+            }`}
           >
             <path
               strokeLinecap="round"
