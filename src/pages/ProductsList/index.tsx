@@ -10,23 +10,30 @@ function ProductsList() {
 
   const [search] = useSearchParams()
 
-  const layoutClassName =
-    search.get('sm') === 'true'
-      ? 'mt-6 grid grid-cols-1 gap-y-10 gap-x-6'
-      : 'mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8'
+  const rowClasses = search.get('sm') === 'true' ? '' : 'sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-2'
 
   return (
-    <main className="mx-auto max-w-2xl py-10 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">
+    <main className="mx-auto max-w-2xl py-5 px-2 sm:py-10 sm:px-4 lg:max-w-7xl lg:px-6">
       <PageTitle text="Products List" />
 
-      <Controls />
+      <div className="grid grid-cols-5 grid-rows-1 gap-2">
+        <aside aria-label="Sidebar">
+          <div className="px-3 py-4 overflow-y-auto rounded bg-gray-100">
+            <h3>Filters</h3>
+          </div>
+        </aside>
 
-      <div className={layoutClassName}>
-        {products.map((product) => (
-          <ProductCard key={product.id} {...product} />
-        ))}
+        <div className="col-span-4">
+          <Controls />
 
-        {products.length === 0 && <p>No products found</p>}
+          <div className={`grid grid-cols-1 gap-y-8 gap-x-2 ${rowClasses}`}>
+            {products.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+
+            {products.length === 0 && <p>No products found</p>}
+          </div>
+        </div>
       </div>
     </main>
   )

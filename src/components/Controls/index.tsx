@@ -17,7 +17,7 @@ export default function Controls() {
   }
 
   return (
-    <div className="flex flex-row items-center justify-between mt-5">
+    <div className="flex flex-row items-center justify-between mb-5">
       <select
         name="sort"
         defaultValue={search.get('sort') || ''}
@@ -41,7 +41,7 @@ export default function Controls() {
         className="form-input rounded p-1 h-8"
         type="text"
         name="search"
-        placeholder="search"
+        placeholder="Search"
         defaultValue={search.get('search') || ''}
         onChange={onChange}
       />

@@ -23,7 +23,7 @@ function ProductCard(p: Product) {
   return (
     <div>
       <div className="group relative mb-2">
-        <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
+        <div className="min-h-60 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-60">
           <img
             src={p.thumbnail}
             alt="Front of men&#039;s Basic Tee in black."
