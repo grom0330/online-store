@@ -17,7 +17,7 @@ export default function Controls() {
   }
 
   return (
-    <div className="flex flex-row items-center justify-between mb-5">
+    <div className="flex flex-row items-center justify-between mb-2 p-1 rounded bg-gray-100">
       <select
         name="sort"
         defaultValue={search.get('sort') || ''}

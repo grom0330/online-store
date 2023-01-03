@@ -10,6 +10,10 @@ type State = {
   error: string
   cashe: Product[]
   products: Product[]
+  categories: string[]
+  brands: string[]
+  priceRange: [number, number]
+  stockRange: [number, number]
   filter(data: qs.ParsedQuery): void
   fetch(): Promise<void>
 }
@@ -21,6 +25,10 @@ const useProducts = create<State>()(
       error: '',
       cashe: [],
       products: [],
+      categories: [],
+      brands: [],
+      priceRange: [0, 0],
+      stockRange: [0, 0],
       filter: (data) => {
         let filtered = get().cashe
 
@@ -65,7 +73,21 @@ const useProducts = create<State>()(
         try {
           const resp = await getProducts()
 
-          set({ status: 'ok', cashe: resp.products, products: resp.products })
+          // TODO: refactor
+          const categories = [...new Set(resp.products.map((p) => p.category))]
+          const brands = [...new Set(resp.products.map((p) => p.brand))]
+          const prices = resp.products.map((p) => p.price)
+          const stocks = resp.products.map((p) => p.stock)
+
+          set({
+            status: 'ok',
+            cashe: resp.products,
+            products: resp.products,
+            categories,
+            brands,
+            priceRange: [Math.min(...prices), Math.max(...prices)],
+            stockRange: [Math.min(...stocks), Math.max(...stocks)]
+          })
         } catch (e) {
           set({
             status: 'error',
