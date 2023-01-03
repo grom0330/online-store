@@ -10,7 +10,7 @@ type State = {
   error: string
   cashe: Product[]
   products: Product[]
-  filter(data: qs.ParsedQuery<string>): void
+  filter(data: qs.ParsedQuery): void
   fetch(): Promise<void>
 }
 
@@ -22,8 +22,10 @@ const useProducts = create<State>()(
       cashe: [],
       products: [],
       filter: (data) => {
+        let filtered = get().products
+
         if (data.search) {
-          const filtered = get().cashe.filter((p) => {
+          filtered = filtered.filter((p) => {
             const search = (data.search as string).toLowerCase()
             return (
               p.title.toLowerCase().includes(search) ||
@@ -35,11 +37,30 @@ const useProducts = create<State>()(
               p.category.toLowerCase().includes(search)
             )
           })
-
-          set({ products: filtered })
         } else {
-          set({ products: get().cashe })
+          filtered = [...get().cashe]
         }
+
+        if (data.sort) {
+          const [field, direction] = (data.sort as string).split('-')
+
+          filtered = filtered.sort((a, b) => {
+            const aValue = a[field as keyof Product] as number
+            const bValue = b[field as keyof Product] as number
+
+            if (direction === 'asc') {
+              return aValue - bValue
+            }
+            if (direction === 'desc') {
+              return bValue - aValue
+            }
+            return 0
+          })
+        } else {
+          filtered === filtered.sort((a, b) => a.id - b.id)
+        }
+
+        set({ products: filtered })
       },
       fetch: async () => {
         set({ status: 'loading' })
