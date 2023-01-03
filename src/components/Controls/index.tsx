@@ -5,56 +5,46 @@ import useProducts from 'store/products'
 export default function Controls() {
   const [search, setSearchParams] = useSearchParams()
 
-  const filter = useProducts((s) => s.filter)
+  const [products, filter] = useProducts((s) => [s.products, s.filter])
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const query = qs.parse(search.toString())
     let newQuery = { ...query, [e.target.name]: e.target.value }
     newQuery = Object.fromEntries(Object.entries(newQuery).filter(([, v]) => v !== ''))
-    const params = qs.stringify(newQuery)
+    const params = qs.stringify(newQuery, { skipEmptyString: true, skipNull: true })
     setSearchParams(params)
     filter(newQuery)
   }
 
   return (
-    <div className="flex flex-row justify-between">
-      <div className="flex">
-        <p>Sort</p>
-        <select name="sort" defaultValue={search.get('sort') || ''} onChange={onChange}>
-          <option />
-          <option value="price-asc">price asc</option>
-          <option value="price-desc">price desc</option>
-          <option value="rating-asc">rating asc</option>
-          <option value="rating-desc">rating desc</option>
-          <option value="discount-asc">discount asc</option>
-          <option value="discount-desc">discount desc</option>
-        </select>
-      </div>
+    <div className="flex flex-row items-center justify-between mt-5">
+      <select
+        name="sort"
+        defaultValue={search.get('sort') || ''}
+        onChange={onChange}
+        className="form-input rounded p-1 pr-10 h-8 w-auto"
+      >
+        <option value="">Sort options</option>
+        <option value="price-asc">Price asc</option>
+        <option value="price-desc">Price desc</option>
+        <option value="rating-asc">Rating asc</option>
+        <option value="rating-desc">Rating desc</option>
+        <option value="discountPercentage-asc">Discount asc</option>
+        <option value="discountPercentage-desc">Discount desc</option>
+      </select>
 
       <div className="flex">
-        <label className="flex flex-row">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-          <input
-            type="text"
-            name="search"
-            defaultValue={search.get('search') || ''}
-            onChange={onChange}
-          />
-        </label>
+        Found: <span className="text-purple-500">{products.length}</span>
       </div>
+
+      <input
+        className="form-input rounded p-1 h-8"
+        type="text"
+        name="search"
+        placeholder="search"
+        defaultValue={search.get('search') || ''}
+        onChange={onChange}
+      />
 
       <div className="flex">
         <label>
