@@ -6,7 +6,7 @@ export default function Header() {
   const [count, total] = useCart((s) => [s.count, s.total], shallow)
 
   return (
-    <header className="max-w-2xl sm:px-6 lg:max-w-7xl lg:px-8 flex justify-between items-center mx self-center mx-auto border-b-1 py-4 border-b">
+    <header className="max-w-2xl px-4 py-4 sm:px-6 lg:max-w-7xl lg:px-8 flex justify-between items-center mx-auto border-b-1 border-b">
       <div className="flex items-center gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"

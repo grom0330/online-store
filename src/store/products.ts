@@ -32,6 +32,7 @@ const useProducts = create<State>()(
               p.description.toLowerCase().includes(search) ||
               p.price.toString().includes(search) ||
               p.stock.toString().includes(search) ||
+              p.rating.toString().includes(search) ||
               p.discountPercentage.toString().includes(search) ||
               p.brand.toLowerCase().includes(search) ||
               p.category.toLowerCase().includes(search)
