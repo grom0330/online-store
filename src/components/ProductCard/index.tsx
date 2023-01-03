@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { Link } from 'react-router-dom'
 import shallow from 'zustand/shallow'
 
 import { Product } from 'dummyjson-api/models'
-import useCartStore from 'store/cart'
+import useCart from 'store/cart'
 
-export default function ProductCard(p: Product) {
-  const [add, remove, isInCart] = useCartStore((s) => [s.add, s.remove, s.isInCart], shallow)
+function ProductCard(p: Product) {
+  const [add, remove, isInCart] = useCart((s) => [s.add, s.remove, s.isInCart], shallow)
 
   const [inCart, setInCart] = useState(isInCart(p.id))
 
@@ -54,6 +54,8 @@ export default function ProductCard(p: Product) {
     </div>
   )
 }
+
+export default memo(ProductCard)
 
 function Button(p: { text: string; onClick(): void }) {
   return (
