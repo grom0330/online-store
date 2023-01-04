@@ -1,24 +1,11 @@
-import { useState, memo } from 'react'
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
-import shallow from 'zustand/shallow'
 
 import { Product } from 'dummyjson-api/models'
 import useCart from 'store/cart'
 
 function ProductCard(p: Product) {
-  const [add, remove, isInCart] = useCart((s) => [s.add, s.remove, s.isInCart], shallow)
-
-  const [inCart, setInCart] = useState(isInCart(p.id))
-
-  const handleAdd = () => {
-    add({ id: p.id, price: p.price })
-    setInCart(isInCart(p.id))
-  }
-
-  const handleRemove = () => {
-    remove(p.id)
-    setInCart(isInCart(p.id))
-  }
+  const cart = useCart()
 
   return (
     <div>
@@ -26,7 +13,7 @@ function ProductCard(p: Product) {
         <div className="min-h-60 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-60">
           <img
             src={p.thumbnail}
-            alt="Front of men&#039;s Basic Tee in black."
+            alt={p.title}
             className="h-full w-full object-cover object-center lg:h-full lg:w-full"
           />
         </div>
@@ -62,9 +49,11 @@ function ProductCard(p: Product) {
         </div>
       </div>
 
-      {!inCart && <Button text="Add to Cart" onClick={handleAdd} />}
+      {!cart.isInCart(p.id) && (
+        <Button text="Add to Cart" onClick={() => cart.add({ id: p.id, price: p.price })} />
+      )}
 
-      {inCart && <Button text="Remove from Cart" onClick={handleRemove} />}
+      {cart.isInCart(p.id) && <Button text="Remove from Cart" onClick={() => cart.remove(p.id)} />}
     </div>
   )
 }

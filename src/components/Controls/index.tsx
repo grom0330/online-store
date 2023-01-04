@@ -9,6 +9,11 @@ export default function Controls() {
 
   const [products, filter] = useProducts((s) => [s.products, s.filter])
 
+  useEffect(() => {
+    filter(qs.parse(search.toString(), { arrayFormat: 'comma' }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     let query = qs.parse(search.toString())
     query = { ...query, [e.target.name]: e.target.value }
@@ -17,10 +22,6 @@ export default function Controls() {
     filter(query)
     setSearchParams(params)
   }
-
-  useEffect(() => {
-    filter(qs.parse(search.toString()))
-  }, [])
 
   return (
     <div className="flex flex-row items-center justify-between mb-2 p-1 rounded bg-gray-100">

@@ -1,23 +1,27 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { memo, useEffect, useState, useRef, useCallback } from 'react'
 
 import './index.css'
 
 type Props = {
+  name: string
+  defaultMin?: number
+  defaultMax?: number
   min: number
   max: number
-  onChange(data: { min: number; max: number }): void
+  onChange(data: { name: string; min: number; max: number }): void
 }
 
-const DualRange = ({ min, max, onChange }: Props) => {
-  const [minVal, setMinVal] = useState(min)
-  const [maxVal, setMaxVal] = useState(max)
-  const minValRef = useRef(min)
-  const maxValRef = useRef(max)
+// TODO: refactor
+const DualRange = (p: Props) => {
+  const [minVal, setMinVal] = useState(p.defaultMin || p.min)
+  const [maxVal, setMaxVal] = useState(p.defaultMax || p.max)
+  const minValRef = useRef(p.defaultMin || p.min)
+  const maxValRef = useRef(p.defaultMax || p.max)
   const range = useRef<HTMLInputElement>(null)
 
   const getPercent = useCallback(
-    (value: number) => Math.round(((value - min) / (max - min)) * 100),
-    [min, max]
+    (value: number) => Math.round(((value - p.min) / (p.max - p.min)) * 100),
+    [p.min, p.max]
   )
 
   useEffect(() => {
@@ -39,36 +43,38 @@ const DualRange = ({ min, max, onChange }: Props) => {
     }
   }, [maxVal, getPercent])
 
-  useEffect(() => {
-    onChange({ min: minVal, max: maxVal })
-  }, [minVal, maxVal, onChange])
+  const handleChange = (min: number, max: number) => {
+    p.onChange({ name: p.name, min, max })
+  }
 
   return (
-    <div className="container">
+    <div className="range__container">
       <input
         type="range"
-        min={min}
-        max={max}
+        min={p.min}
+        max={p.max}
         value={minVal}
         onChange={(event) => {
           const value = Math.min(Number(event.target.value), maxVal - 1)
           setMinVal(value)
           minValRef.current = value
+          handleChange(value, maxVal)
         }}
-        className="thumb thumb--left"
-        style={{ zIndex: minVal > max - 100 ? '5' : 'auto' }}
+        className="range__thumb range__thumb--left"
+        style={{ zIndex: minVal > p.max - 100 ? '5' : undefined }}
       />
       <input
         type="range"
-        min={min}
-        max={max}
+        min={p.min}
+        max={p.max}
         value={maxVal}
         onChange={(event) => {
           const value = Math.max(Number(event.target.value), minVal + 1)
           setMaxVal(value)
           maxValRef.current = value
+          handleChange(minVal, value)
         }}
-        className="thumb thumb--right"
+        className="range__thumb range__thumb--right"
       />
 
       <div className="slider">
@@ -81,4 +87,4 @@ const DualRange = ({ min, max, onChange }: Props) => {
   )
 }
 
-export default DualRange
+export default memo(DualRange)
