@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import qs from 'query-string'
 
 import useProducts from 'store/products'
+import DualRange from 'components/DualRange'
 
 function Filters() {
   const [search, setSearchParams] = useSearchParams()
@@ -18,7 +19,6 @@ function Filters() {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = qs.parse(search.toString(), { arrayFormat: 'comma' })
 
-    // TODO: refactor
     if (typeof query[e.target.name] === 'string') {
       query[e.target.name] = [query[e.target.name] as string]
     }
@@ -42,6 +42,10 @@ function Filters() {
 
     filter(query)
     setSearchParams(params)
+  }
+
+  const onRangeChange = (p: { min: number; max: number }) => {
+    const query = qs.parse(search.toString(), { arrayFormat: 'comma' })
   }
 
   useEffect(() => {
@@ -83,48 +87,10 @@ function Filters() {
       </div>
 
       <h3 className="font-semibold">Price</h3>
-      <div className="relative h-10">
-        <input
-          className="w-full accent-purple-600"
-          name="price"
-          min={priceRange.min}
-          max={priceRange.max}
-          step={1}
-          defaultValue={priceRange.min}
-          type="range"
-        />
-        <input
-          className="w-full accent-purple-600"
-          name="price"
-          min={priceRange.min}
-          max={priceRange.max}
-          step={1}
-          type="range"
-          defaultValue={priceRange.max}
-        />
-      </div>
+      <DualRange min={priceRange.min} max={priceRange.max} onChange={onRangeChange} />
 
       <h3 className="font-semibold">Stock</h3>
-      <div className="relative h-10">
-        <input
-          className="w-full accent-purple-600"
-          name="stock-min"
-          min={stockRange.min}
-          max={stockRange.max}
-          step={1}
-          type="range"
-          defaultValue={stockRange.min}
-        />
-        <input
-          className="w-full accent-purple-600"
-          name="stock-max"
-          min={stockRange.min}
-          max={stockRange.max}
-          step={1}
-          type="range"
-          defaultValue={stockRange.max}
-        />
-      </div>
+      <DualRange min={stockRange.min} max={stockRange.max} onChange={onRangeChange} />
     </>
   )
 }
