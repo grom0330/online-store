@@ -16,6 +16,11 @@ function Filters() {
     s.filter
   ])
 
+  useEffect(() => {
+    filter(qs.parse(search.toString(), { arrayFormat: 'comma', parseNumbers: true }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = qs.parse(search.toString(), { arrayFormat: 'comma' })
 
@@ -44,13 +49,17 @@ function Filters() {
     setSearchParams(params)
   }
 
-  const onRangeChange = (p: { min: number; max: number }) => {
-    const query = qs.parse(search.toString(), { arrayFormat: 'comma' })
+  const onRangeChange = (p: { name: string; min: number; max: number }) => {
+    const query = qs.parse(search.toString(), { arrayFormat: 'comma', parseNumbers: true })
+    query[p.name] = [p.min, p.max]
+    const params = qs.stringify(query, {
+      skipEmptyString: true,
+      skipNull: true,
+      arrayFormat: 'comma'
+    })
+    filter(query)
+    setSearchParams(params)
   }
-
-  useEffect(() => {
-    filter(qs.parse(search.toString()))
-  }, [])
 
   return (
     <>
@@ -87,10 +96,24 @@ function Filters() {
       </div>
 
       <h3 className="font-semibold">Price</h3>
-      <DualRange min={priceRange.min} max={priceRange.max} onChange={onRangeChange} />
+      <DualRange
+        name="price"
+        defaultMin={Number(search.get('price')?.split(',')[0])}
+        defaultMax={Number(search.get('price')?.split(',')[1])}
+        min={priceRange.min}
+        max={priceRange.max}
+        onChange={onRangeChange}
+      />
 
       <h3 className="font-semibold">Stock</h3>
-      <DualRange min={stockRange.min} max={stockRange.max} onChange={onRangeChange} />
+      <DualRange
+        name="stock"
+        defaultMin={Number(search.get('stock')?.split(',')[0])}
+        defaultMax={Number(search.get('stock')?.split(',')[1])}
+        min={stockRange.min}
+        max={stockRange.max}
+        onChange={onRangeChange}
+      />
     </>
   )
 }
