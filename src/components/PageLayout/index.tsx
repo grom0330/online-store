@@ -8,13 +8,13 @@ import Footer from 'components/Footer'
 import useProducts from 'store/products'
 
 export default function PageLayout() {
-  const [status, error, fetch] = useProducts(
+  const [status, error, fetchProducts] = useProducts(
     (state) => [state.status, state.error, state.fetch],
     shallow
   )
 
   useEffect(() => {
-    fetch()
+    fetchProducts()
   }, [])
 
   return (

@@ -4,12 +4,17 @@ import qs from 'query-string'
 
 import { getProducts } from 'dummyjson-api'
 import { Product } from 'dummyjson-api/models'
+import { search, sort, filterByCategory, filterByBrand, getProductsMeta } from 'helpers'
 
 type State = {
   status: 'loading' | 'ok' | 'error'
   error: string
   cashe: Product[]
   products: Product[]
+  categories: string[]
+  brands: string[]
+  priceRange: { min: number; max: number }
+  stockRange: { min: number; max: number }
   filter(data: qs.ParsedQuery): void
   fetch(): Promise<void>
 }
@@ -21,51 +26,39 @@ const useProducts = create<State>()(
       error: '',
       cashe: [],
       products: [],
+      categories: [],
+      brands: [],
+      priceRange: { min: 0, max: 0 },
+      stockRange: { min: 0, max: 0 },
       filter: (data) => {
-        let filtered = get().cashe
+        let result = get().cashe
 
         if (data.search) {
-          filtered = filtered.filter((p) => {
-            const search = (data.search as string).toLowerCase()
-            return (
-              p.title.toLowerCase().includes(search) ||
-              p.description.toLowerCase().includes(search) ||
-              p.price.toString().includes(search) ||
-              p.stock.toString().includes(search) ||
-              p.rating.toString().includes(search) ||
-              p.discountPercentage.toString().includes(search) ||
-              p.brand.toLowerCase().includes(search) ||
-              p.category.toLowerCase().includes(search)
-            )
-          })
+          result = search(result, data.search as string)
         }
 
         if (data.sort) {
-          const [field, direction] = (data.sort as string).split('-')
-
-          filtered = [...filtered].sort((a, b) => {
-            const aValue = a[field as keyof Product] as number
-            const bValue = b[field as keyof Product] as number
-
-            if (direction === 'asc') {
-              return aValue - bValue
-            }
-            if (direction === 'desc') {
-              return bValue - aValue
-            }
-            return 0
-          })
+          result = sort(result, data.sort as string)
         }
 
-        set({ products: filtered })
+        if (data.category) {
+          result = filterByCategory(result, data.category as string[])
+        }
+
+        if (data.brand) {
+          result = filterByBrand(result, data.brand as string[])
+        }
+
+        set({ products: result })
       },
       fetch: async () => {
         set({ status: 'loading' })
 
         try {
           const resp = await getProducts()
+          const meta = getProductsMeta(resp.products)
 
-          set({ status: 'ok', cashe: resp.products, products: resp.products })
+          set({ status: 'ok', cashe: resp.products, products: resp.products, ...meta })
         } catch (e) {
           set({
             status: 'error',
