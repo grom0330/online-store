@@ -18,6 +18,7 @@ function Filters() {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = qs.parse(search.toString(), { arrayFormat: 'comma' })
 
+    // TODO: refactor
     if (typeof query[e.target.name] === 'string') {
       query[e.target.name] = [query[e.target.name] as string]
     }
@@ -48,12 +49,18 @@ function Filters() {
   }, [])
 
   return (
-    <div className="px-3 py-2 rounded bg-gray-100">
+    <>
       <h3 className="font-semibold">Category</h3>
       <div className="flex flex-col mb-4">
         {categories.map((category) => (
           <label key={category} className="flex flex-row items-center">
-            <input type="checkbox" name="category" value={category} onChange={onChange} />
+            <input
+              type="checkbox"
+              name="category"
+              value={category}
+              defaultChecked={search.get('category')?.includes(category)}
+              onChange={onChange}
+            />
             &nbsp;<div className="first-letter:capitalize">{category}</div>
           </label>
         ))}
@@ -63,8 +70,14 @@ function Filters() {
       <div className="flex flex-col mb-4">
         {brands.map((brand) => (
           <label key={brand} className="flex flex-row items-center">
-            <input type="checkbox" name="brand" value={brand} onChange={onChange} />
-            &nbsp;{brand}
+            <input
+              type="checkbox"
+              name="brand"
+              value={brand}
+              onChange={onChange}
+              defaultChecked={search.get('brand')?.includes(brand)}
+            />
+            &nbsp;<div className="first-letter:capitalize">{brand}</div>
           </label>
         ))}
       </div>
@@ -112,7 +125,7 @@ function Filters() {
           defaultValue={stockRange.max}
         />
       </div>
-    </div>
+    </>
   )
 }
 

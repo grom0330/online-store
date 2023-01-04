@@ -19,13 +19,13 @@ export function search(products: Product[], searchString: string) {
 
 export function filterByCategory(products: Product[], categories: string[]) {
   return products.filter((p) => {
-    return categories.includes(p.category)
+    return categories.includes(p.category.toLowerCase())
   })
 }
 
 export function filterByBrand(products: Product[], brands: string[]) {
   return products.filter((p) => {
-    return brands.includes(p.brand)
+    return brands.includes(p.brand.toLowerCase())
   })
 }
 
@@ -51,12 +51,12 @@ export function sort(products: Product[], sortString: string) {
 export function getProductsMeta(products: Product[]) {
   return products.reduce(
     (acc, curr) => {
-      if (!acc.categories.includes(curr.category)) {
-        acc.categories.push(curr.category)
+      if (!acc.categories.includes(curr.category.toLowerCase())) {
+        acc.categories.push(curr.category.toLowerCase())
       }
 
-      if (!acc.brands.includes(curr.brand)) {
-        acc.brands.push(curr.brand)
+      if (!acc.brands.includes(curr.brand.toLowerCase())) {
+        acc.brands.push(curr.brand.toLowerCase())
       }
 
       if (curr.price < acc.priceRange.min) {
