@@ -17,6 +17,18 @@ export function search(products: Product[], searchString: string) {
   })
 }
 
+export function filterByCategory(products: Product[], categories: string[]) {
+  return products.filter((p) => {
+    return categories.includes(p.category)
+  })
+}
+
+export function filterByBrand(products: Product[], brands: string[]) {
+  return products.filter((p) => {
+    return brands.includes(p.brand)
+  })
+}
+
 export function sort(products: Product[], sortString: string) {
   const [field, direction] = sortString.split('-')
 
@@ -27,9 +39,11 @@ export function sort(products: Product[], sortString: string) {
     if (direction === 'asc') {
       return aValue - bValue
     }
+
     if (direction === 'desc') {
       return bValue - aValue
     }
+
     return 0
   })
 }
@@ -45,29 +59,34 @@ export function getProductsMeta(products: Product[]) {
         acc.brands.push(curr.brand)
       }
 
-      if (curr.price < acc.priceRange[0]) {
-        acc.priceRange[0] = curr.price
+      if (curr.price < acc.priceRange.min) {
+        acc.priceRange.min = curr.price
       }
 
-      if (curr.price > acc.priceRange[1]) {
-        acc.priceRange[1] = curr.price
+      if (curr.price > acc.priceRange.max) {
+        acc.priceRange.max = curr.price
       }
 
-      if (curr.stock < acc.stockRange[0]) {
-        acc.stockRange[0] = curr.stock
+      if (curr.stock < acc.stockRange.min) {
+        acc.stockRange.min = curr.stock
       }
 
-      if (curr.stock > acc.stockRange[1]) {
-        acc.stockRange[1] = curr.stock
+      if (curr.stock > acc.stockRange.min) {
+        acc.stockRange.max = curr.stock
       }
 
       return acc
     },
-    { categories: [], brands: [], priceRange: [0, 0], stockRange: [0, 0] } as {
+    {
+      categories: [],
+      brands: [],
+      priceRange: { min: 0, max: 0 },
+      stockRange: { min: 0, max: 0 }
+    } as {
       categories: string[]
       brands: string[]
-      priceRange: [number, number]
-      stockRange: [number, number]
+      priceRange: { min: number; max: number }
+      stockRange: { min: number; max: number }
     }
   )
 }

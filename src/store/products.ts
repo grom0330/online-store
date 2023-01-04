@@ -4,7 +4,7 @@ import qs from 'query-string'
 
 import { getProducts } from 'dummyjson-api'
 import { Product } from 'dummyjson-api/models'
-import { search, sort, getProductsMeta } from 'helpers'
+import { search, sort, filterByCategory, filterByBrand, getProductsMeta } from 'helpers'
 
 type State = {
   status: 'loading' | 'ok' | 'error'
@@ -13,8 +13,8 @@ type State = {
   products: Product[]
   categories: string[]
   brands: string[]
-  priceRange: [number, number]
-  stockRange: [number, number]
+  priceRange: { min: number; max: number }
+  stockRange: { min: number; max: number }
   filter(data: qs.ParsedQuery): void
   fetch(): Promise<void>
 }
@@ -28,8 +28,8 @@ const useProducts = create<State>()(
       products: [],
       categories: [],
       brands: [],
-      priceRange: [0, 0],
-      stockRange: [0, 0],
+      priceRange: { min: 0, max: 0 },
+      stockRange: { min: 0, max: 0 },
       filter: (data) => {
         let result = get().cashe
 
@@ -39,6 +39,14 @@ const useProducts = create<State>()(
 
         if (data.sort) {
           result = sort(result, data.sort as string)
+        }
+
+        if (data.category) {
+          result = filterByCategory(result, data.category as string[])
+        }
+
+        if (data.brand) {
+          result = filterByBrand(result, data.brand as string[])
         }
 
         set({ products: result })

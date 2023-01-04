@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import qs from 'query-string'
+
 import useProducts from 'store/products'
 
 export default function Controls() {
@@ -8,13 +10,17 @@ export default function Controls() {
   const [products, filter] = useProducts((s) => [s.products, s.filter])
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const query = qs.parse(search.toString())
-    let newQuery = { ...query, [e.target.name]: e.target.value }
-    newQuery = Object.fromEntries(Object.entries(newQuery).filter(([, v]) => v !== ''))
-    const params = qs.stringify(newQuery, { skipEmptyString: true, skipNull: true })
+    let query = qs.parse(search.toString())
+    query = { ...query, [e.target.name]: e.target.value }
+    const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
+
+    filter(query)
     setSearchParams(params)
-    filter(newQuery)
   }
+
+  useEffect(() => {
+    filter(qs.parse(search.toString()))
+  }, [])
 
   return (
     <div className="flex flex-row items-center justify-between mb-2 p-1 rounded bg-gray-100">
