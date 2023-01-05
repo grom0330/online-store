@@ -70,8 +70,8 @@ const useCart = create<CartState>()(
             return {
               ids: Object.keys(prev.byId).map(Number),
               byId: prev.byId,
-              count: prev.count - 1,
-              total: prev.total - addedItem.price
+              count: prev.count - addedItem.count,
+              total: prev.total - addedItem.price * addedItem.count
             }
           })
       }),
