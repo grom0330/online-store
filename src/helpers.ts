@@ -30,16 +30,13 @@ export function filterByBrand(products: Product[], brands: string[]) {
 }
 
 export function filterByPrice(products: Product[], priceRange: number[]) {
-  console.log({ priceRange })
   return products.filter((p) => {
     return p.price >= priceRange[0] && p.price <= priceRange[1]
   })
 }
 
 export function filterByStock(products: Product[], stockRange: number[]) {
-  console.log({ stockRange })
   return products.filter((p) => {
-    console.log('product stock', p.stock)
     return p.stock >= stockRange[0] && p.stock <= stockRange[1]
   })
 }
