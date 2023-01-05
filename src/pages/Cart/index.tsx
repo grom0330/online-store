@@ -18,10 +18,24 @@ export default function Cart() {
 
   const handleLimitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let query = qs.parse(searchParams.toString())
-    query = { ...query, [e.target.name]: e.target.value }
+    query = { ...query, limit: e.target.value, page: '1' }
     const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
     setSearchParams(params)
   }
+
+  const handlePageChange = (idx: number) => {
+    let query = qs.parse(searchParams.toString(), { parseNumbers: true })
+    query = { ...query, page: idx }
+    const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
+    setSearchParams(params)
+  }
+
+  const pageLimit = Number(searchParams.get('limit')) || 3
+  const currentPage = Number(searchParams.get('page')) || 1
+  const itemsOnPage = cart.ids.slice(
+    (currentPage - 1) * pageLimit,
+    (currentPage - 1) * pageLimit + pageLimit
+  )
 
   return (
     <div className="mx-auto max-w-2xl py-5 px-2 sm:py-10 sm:px-4 lg:max-w-7xl lg:px-6">
@@ -40,9 +54,9 @@ export default function Cart() {
                   type="number"
                   name="limit"
                   min="1"
-                  max={cart.count}
+                  max={cart.ids.length}
                   onChange={handleLimitChange}
-                  defaultValue={searchParams.get('limit') || 3}
+                  defaultValue={pageLimit}
                   className="pl-2 pr-0 py-0 m-0 w-10 text-gray-700 text-sm border-gray-700"
                 />
               </div>
@@ -50,12 +64,12 @@ export default function Cart() {
 
             <div className="mb-8">
               <div className="flow-root">
-                <ul role="list" className="-my-6 divide-y divide-gray-200">
+                <ul role="list" className="divide-y divide-gray-200">
                   {cart.count === 0 && <h2>Cart is empty</h2>}
 
-                  {cart.ids.slice(0, Number(searchParams.get('limit')) || 3).map((id, idx) => (
+                  {itemsOnPage.map((id) => (
                     <li key={id} className="flex py-6">
-                      <div className="mr-2 text-gray-500">{idx + 1}</div>
+                      <div className="mr-2 text-gray-500">{cart.ids.indexOf(id) + 1}</div>
 
                       <Link
                         to={`/product-details/${id}`}
@@ -141,7 +155,12 @@ export default function Cart() {
               </div>
             </div>
 
-            <Pagination length={cart.ids.length} limit={Number(searchParams.get('limit')) || 3} />
+            <Pagination
+              length={cart.ids.length}
+              limit={pageLimit}
+              current={currentPage}
+              onChange={handlePageChange}
+            />
           </div>
 
           <div className="border-t border-gray-200 py-6 px-4 sm:px-6 lg:border-none">
