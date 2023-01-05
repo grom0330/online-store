@@ -23,6 +23,7 @@ type State = {
   brands: string[]
   priceRange: { min: number; max: number }
   stockRange: { min: number; max: number }
+  byId: { [id: number]: Product }
   filter(data: qs.ParsedQuery<string | number>): void
   fetch(): Promise<void>
 }
@@ -38,8 +39,8 @@ const useProducts = create<State>()(
       brands: [],
       priceRange: { min: 0, max: 0 },
       stockRange: { min: 0, max: 0 },
+      byId: {},
       filter: (data) => {
-        console.log({ data })
         let result = get().cashe
 
         if (data.search) {
@@ -75,7 +76,12 @@ const useProducts = create<State>()(
           const resp = await getProducts()
           const meta = getProductsMeta(resp.products)
 
-          set({ status: 'ok', cashe: resp.products, products: resp.products, ...meta })
+          const byId = resp.products.reduce((acc, curr) => {
+            acc[curr.id] = curr
+            return acc
+          }, {} as { [id: number]: Product })
+
+          set({ status: 'ok', cashe: resp.products, byId, products: resp.products, ...meta })
         } catch (e) {
           set({
             status: 'error',

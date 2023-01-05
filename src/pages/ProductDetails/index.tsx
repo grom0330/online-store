@@ -1,40 +1,17 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { useParams } from 'react-router-dom'
-import PageTitle from 'components/PageTitle'
-import useProducts from 'store/products'
-import { StarIcon } from '@heroicons/react/20/solid'
-import useCart from 'store/cart'
-import shallow from 'zustand/shallow'
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { StarIcon } from '@heroicons/react/20/solid'
+
+import useCart from 'store/cart'
+import useProducts from 'store/products'
 
 export default function ProductDetails() {
   const { id } = useParams()
 
-  const product = useProducts((s) => s.products.find((p) => p.id === Number(id)))
+  const product = useProducts((s) => s.byId[Number(id)])
+  const cart = useCart()
 
-  if (!product) {
-    return (
-      <div>
-        <PageTitle text="Product Details" />
-        <h3>product not found</h3>
-      </div>
-    )
-  }
-
-  const [add, remove, isInCart] = useCart((s) => [s.add, s.remove, s.isInCart], shallow)
-  const [inCart, setInCart] = useState(isInCart(product.id))
-
-  const handleAdd = () => {
-    add({ id: product.id, price: product.price })
-    setInCart(isInCart(product.id))
-  }
-
-  const handleRemove = () => {
-    remove(product.id)
-    setInCart(isInCart(product.id))
-  }
-
-  function classNames(...classes: any) {
+  function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
   }
 
@@ -42,6 +19,14 @@ export default function ProductDetails() {
 
   const handleChange = (index: number) => {
     setMainImages(index)
+  }
+
+  if (!product) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 pt-10 pb-16 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-16 lg:pb-24">
+        Product not found
+      </div>
+    )
   }
 
   return (
@@ -108,12 +93,21 @@ export default function ProductDetails() {
                 <div className="ml-2">{product.rating}</div>
               </div>
             </div>
-            {!inCart && <Button text="Add to Cart" onClick={handleAdd} />}
-            {inCart && <Button text="Remove from Cart" onClick={handleRemove} />}
+
+            {!cart.byId[product.id] && (
+              <Button
+                text="Add to Cart"
+                onClick={() => cart.add({ id: product.id, price: product.price })}
+              />
+            )}
+
+            {!!cart.byId[product.id] && (
+              <Button text="Remove from Cart" onClick={() => cart.remove(product.id)} />
+            )}
+
             <button
               type="submit"
               className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={function () {}}
             >
               Buy now
             </button>
