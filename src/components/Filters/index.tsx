@@ -64,7 +64,7 @@ function Filters() {
   return (
     <>
       <h3 className="font-semibold">Category</h3>
-      <div className="flex flex-col mb-4">
+      <div className="flex flex-col mb-4 overflow-y-scroll max-h-54 px-1">
         {categories.map((category) => (
           <label key={category} className="flex flex-row items-center">
             <input
@@ -80,7 +80,7 @@ function Filters() {
       </div>
 
       <h3 className="font-semibold">Brands</h3>
-      <div className="flex flex-col mb-4">
+      <div className="flex flex-col mb-4 overflow-y-scroll max-h-52 px-1">
         {brands.map((brand) => (
           <label key={brand} className="flex flex-row items-center">
             <input

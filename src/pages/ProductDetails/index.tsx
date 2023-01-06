@@ -32,8 +32,6 @@ export default function ProductDetails() {
         <img className="h-80 object-cover" src={product.images[mainImgIdx]} />
         <div className="flex gap-2">
           {product.images.map((imgSrc, idx) => {
-            // if (imgSrc.includes('thumbnail')) return null
-
             return (
               <img
                 key={idx}
