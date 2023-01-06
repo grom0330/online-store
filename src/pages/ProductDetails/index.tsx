@@ -29,8 +29,10 @@ export default function ProductDetails() {
       </nav>
 
       <div className="grid grid-cols-1 gap-2">
-        <img className="h-80 object-cover" src={product.images[mainImgIdx]} />
-        <div className="flex gap-2">
+        <div className="flex justify-center">
+          <img className="h-80 object-cover" src={product.images[mainImgIdx]} />
+        </div>
+        <div className="flex gap-2 justify-center">
           {product.images.map((imgSrc, idx) => {
             return (
               <img
