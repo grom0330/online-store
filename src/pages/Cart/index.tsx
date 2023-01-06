@@ -38,7 +38,7 @@ export default function Cart() {
   )
 
   return (
-    <div className="mx-auto max-w-2xl py-5 px-2 sm:py-10 sm:px-4 lg:max-w-7xl lg:px-6">
+    <>
       <PageTitle text="Cart" />
 
       <div className="pointer-events-auto">
@@ -203,6 +203,6 @@ export default function Cart() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

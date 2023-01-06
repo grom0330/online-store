@@ -20,7 +20,7 @@ function ProductsList() {
   const filterIconClass = isFilterVisible ? '' : 'hidden'
 
   return (
-    <div className="mx-auto max-w-2xl py-5 px-2 sm:py-10 sm:px-4 lg:max-w-7xl lg:px-6">
+    <>
       <PageTitle text="Products List" />
 
       <div className="grid grid-cols-5 grid-rows-1 gap-2">
@@ -50,7 +50,7 @@ function ProductsList() {
           </main>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -4,7 +4,7 @@ import GitLogo from '../../assets/images/github-logo.svg'
 
 const Footer = () => {
   return (
-    <footer className="max-w-2xl py-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8 flex justify-between items-center m-auto border-t-1 border-t">
+    <footer className="mx-auto max-w-2xl py-2 px-2 sm:py-5 sm:px-4 lg:max-w-7xl lg:px-6 flex justify-between items-center m-auto border-t-1 border-t">
       <a>
         <img src={RsLogo} className="w-20" />
       </a>

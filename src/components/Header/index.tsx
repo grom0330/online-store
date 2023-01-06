@@ -8,7 +8,7 @@ export default function Header() {
   const [count, total] = useCart((s) => [s.count, s.total], shallow)
 
   return (
-    <header className="max-w-2xl px-4 py-4 sm:px-6 lg:max-w-7xl lg:px-8 flex justify-between items-center mx-auto border-b-1 border-b">
+    <header className="mx-auto max-w-2xl py-2 px-2 sm:py-5 sm:px-4 lg:max-w-7xl lg:px-6 flex justify-between items-center border-b-1 border-b">
       <Link to="/" className="flex items-center gap-2">
         <ShoppingBagIcon width={24} height={24} />
 

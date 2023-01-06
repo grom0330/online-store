@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react'
 import { Outlet } from 'react-router'
 import shallow from 'zustand/shallow'
@@ -20,9 +21,11 @@ export default function PageLayout() {
   return (
     <>
       <Header />
-      {status === 'loading' && <Loader />}
-      {status === 'error' && <div>{error}</div>}
-      {status === 'ok' && <Outlet />}
+      <div className="mx-auto max-w-2xl py-5 px-2 sm:py-10 sm:px-4 lg:max-w-7xl lg:px-6">
+        {status === 'loading' && <Loader />}
+        {status === 'error' && <div>{error}</div>}
+        {status === 'ok' && <Outlet />}
+      </div>
       <Footer />
     </>
   )
