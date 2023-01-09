@@ -21,6 +21,10 @@ export default function CheckoutModel({ p, total }: CheckoutModelProps) {
   const [validity, setValidity] = useState('')
   const [cardNumber, setCardNumber] = useState(0)
 
+  useEffect(() => {
+    setForm(p)
+  }, [p])
+
   const validityHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const per = validity.concat('/', e.target.value.slice(-1))
     if (validity.length == 2 && !(e.target.value.length === 1)) {
@@ -41,6 +45,9 @@ export default function CheckoutModel({ p, total }: CheckoutModelProps) {
   const buttonHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setForm(false)
+    setTimeout(() => {
+      navigate('/')
+    }, 2000)
   }
 
   return (

@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<PageLayout />}>
           <Route index element={<ProductsList />} />
           <Route path="product-details/:id" element={<ProductDetails />} />
-          <Route path="cart" element={<Cart />} />
+          <Route path="cart" element={<Cart p={false} />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>
