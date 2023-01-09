@@ -1,56 +1,16 @@
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { StarIcon } from '@heroicons/react/20/solid'
-import qs from 'query-string'
 
 import PageTitle from 'components/PageTitle'
-import useProducts from 'store/products'
-import useCart from 'store/cart'
 import Pagination from 'components/Pagination'
-import CheckoutModel from 'components/CheckoutModal'
-import { useState } from 'react'
+import CheckoutModal from 'components/CheckoutModal'
+import useCartPage from './useCartPage'
 
-export type CartProps = {
-  p: boolean
-}
-
-export default function Cart({ p }: CartProps) {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const cart = useCart()
-  const products = useProducts((s) => s.byId)
-  const [modal, setModal] = useState(p)
-
-  const handleCheckout = () => {
-    setModal(true)
-  }
-
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
-  }
-
-  const handleLimitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let query = qs.parse(searchParams.toString())
-    query = { ...query, limit: e.target.value, page: '1' }
-    const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
-    setSearchParams(params)
-  }
-
-  const handlePageChange = (idx: number) => {
-    let query = qs.parse(searchParams.toString(), { parseNumbers: true })
-    query = { ...query, page: idx }
-    const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
-    setSearchParams(params)
-  }
-
-  const pageLimit = Number(searchParams.get('limit')) || 3
-  const currentPage = Number(searchParams.get('page')) || 1
-  const itemsOnPage = cart.ids.slice(
-    (currentPage - 1) * pageLimit,
-    (currentPage - 1) * pageLimit + pageLimit
-  )
+export default function Cart() {
+  const p = useCartPage()
 
   return (
     <>
-      <CheckoutModel p={modal} total={cart.total} />
       <PageTitle text="Cart" />
 
       <div className="pointer-events-auto">
@@ -66,9 +26,9 @@ export default function Cart({ p }: CartProps) {
                   type="number"
                   name="limit"
                   min="1"
-                  max={cart.ids.length}
-                  onChange={handleLimitChange}
-                  defaultValue={pageLimit}
+                  max={p.cart.ids.length}
+                  onChange={p.handleLimitChange}
+                  defaultValue={p.pageLimit}
                   className="pl-2 pr-0 py-0 m-0 w-10 text-gray-700 text-sm border-gray-700"
                 />
               </div>
@@ -77,19 +37,19 @@ export default function Cart({ p }: CartProps) {
             <div className="mb-8">
               <div className="flow-root">
                 <ul role="list" className="divide-y divide-gray-200">
-                  {cart.count === 0 && <h2>Cart is empty</h2>}
+                  {p.cart.count === 0 && <h2>Cart is empty</h2>}
 
-                  {itemsOnPage.map((id) => (
+                  {p.itemsOnPage.map((id) => (
                     <li key={id} className="flex py-6">
-                      <div className="mr-2 text-gray-500">{cart.ids.indexOf(id) + 1}</div>
+                      <div className="mr-2 text-gray-500">{p.cart.ids.indexOf(id) + 1}</div>
 
                       <Link
                         to={`/product-details/${id}`}
                         className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200"
                       >
                         <img
-                          src={products[id].thumbnail}
-                          alt={products[id].title}
+                          src={p.products[id].thumbnail}
+                          alt={p.products[id].title}
                           className="h-full w-full object-cover object-center"
                         />
                       </Link>
@@ -98,15 +58,15 @@ export default function Cart({ p }: CartProps) {
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <Link to={`/product-details/${id}`}>{products[id].title}</Link>
+                              <Link to={`/product-details/${id}`}>{p.products[id].title}</Link>
                             </h3>
-                            <p className="ml-4">${products[id].price * cart.byId[id].count}</p>
+                            <p className="ml-4">${p.products[id].price * p.cart.byId[id].count}</p>
                           </div>
 
                           <div className="flex justify-between text-base font-medium text-gray-900">
-                            <p className="mt-1 text-sm text-gray-500">{products[id].category}</p>
+                            <p className="mt-1 text-sm text-gray-500">{p.products[id].category}</p>
                             <p className="mt-1 text-sm text-gray-500">
-                              {products[id].discountPercentage}%
+                              {p.products[id].discountPercentage}%
                             </p>
                           </div>
                         </div>
@@ -115,8 +75,8 @@ export default function Cart({ p }: CartProps) {
                           {[0, 1, 2, 3, 4].map((rating) => (
                             <StarIcon
                               key={rating}
-                              className={classNames(
-                                Math.round(products[id].rating) > rating
+                              className={p.ratingClassNames(
+                                Math.round(p.products[id].rating) > rating
                                   ? 'text-purple-600'
                                   : 'text-gray-200',
                                 'h-5 w-5 flex-shrink-0'
@@ -126,24 +86,24 @@ export default function Cart({ p }: CartProps) {
                           ))}
                         </div>
 
-                        <p className="my-2">{products[id].description}</p>
+                        <p className="my-2">{p.products[id].description}</p>
 
-                        <p className="text-gray-500 my-1">Stock: {products[id].stock}</p>
+                        <p className="text-gray-500 my-1">Stock: {p.products[id].stock}</p>
 
                         <div className="flex flex-1 items-end justify-between text-sm">
                           <div className="flex">
                             <button
                               className="bg-purple-200 w-5 h-5 hover:bg-purple-300"
-                              onClick={() => cart.decrease(id)}
+                              onClick={() => p.cart.decrease(id)}
                             >
                               -
                             </button>
-                            <p className="text-gray-500 mx-1">Qty {cart.byId[id].count}</p>
+                            <p className="text-gray-500 mx-1">Qty {p.cart.byId[id].count}</p>
                             <button
                               className="bg-purple-200 w-5 h-5 hover:bg-purple-300"
-                              disabled={cart.byId[id].count >= products[id].stock}
+                              disabled={p.cart.byId[id].count >= p.products[id].stock}
                               onClick={() => {
-                                cart.increase(id)
+                                p.cart.increase(id)
                               }}
                             >
                               +
@@ -154,7 +114,7 @@ export default function Cart({ p }: CartProps) {
                             <button
                               type="button"
                               className="font-medium text-indigo-600 hover:text-indigo-500"
-                              onClick={() => cart.remove(id)}
+                              onClick={() => p.cart.remove(id)}
                             >
                               Remove
                             </button>
@@ -168,10 +128,10 @@ export default function Cart({ p }: CartProps) {
             </div>
 
             <Pagination
-              length={cart.ids.length}
-              limit={pageLimit}
-              current={currentPage}
-              onChange={handlePageChange}
+              length={p.cart.ids.length}
+              limit={p.pageLimit}
+              current={p.currentPage}
+              onChange={p.handlePageChange}
             />
           </div>
 
@@ -181,11 +141,11 @@ export default function Cart({ p }: CartProps) {
             </p>
             <div className="flex border-b justify-between text-base font-medium text-gray-900 py-2">
               <p>Products</p>
-              <p>{cart.count}</p>
+              <p>{p.cart.count}</p>
             </div>
             <div className="flex justify-between text-base font-medium text-gray-900 py-2">
               <p>Subtotal</p>
-              <p>${cart.total}</p>
+              <p>${p.cart.total}</p>
             </div>
 
             <div className="flex justify-between text-base font-medium text-gray-900 py-2">
@@ -197,7 +157,7 @@ export default function Cart({ p }: CartProps) {
 
             <div className="mt-6">
               <a
-                onClick={handleCheckout}
+                onClick={p.handleCheckout}
                 href="#"
                 className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
               >
@@ -216,6 +176,8 @@ export default function Cart({ p }: CartProps) {
           </div>
         </div>
       </div>
+
+      <CheckoutModal p={p.isCheckoutModalVisible} total={p.cart.total} />
     </>
   )
 }

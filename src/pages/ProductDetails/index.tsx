@@ -1,17 +1,29 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { StarIcon } from '@heroicons/react/20/solid'
 
+import { CartLocationState } from 'pages/Cart/useCartPage'
 import useCart from 'store/cart'
 import useProducts from 'store/products'
 
 export default function ProductDetails() {
   const { id } = useParams()
+  const navigate = useNavigate()
 
   const product = useProducts((s) => s.byId[Number(id)])
   const cart = useCart()
 
   const [mainImgIdx, setMainImgIdx] = useState(0)
+
+  const handleBuyNow = () => {
+    if (!product) return
+
+    if (!cart.byId[product.id]) {
+      cart.add({ id: product.id, price: product.price })
+    }
+
+    navigate('/cart', { state: { shouldOpenCheckoutModal: true } as CartLocationState })
+  }
 
   if (!product) {
     return <p>Product not found.</p>
@@ -87,7 +99,7 @@ export default function ProductDetails() {
           )}
 
           <button
-            type="submit"
+            onClick={handleBuyNow}
             className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             Buy now
