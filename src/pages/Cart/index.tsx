@@ -6,11 +6,22 @@ import PageTitle from 'components/PageTitle'
 import useProducts from 'store/products'
 import useCart from 'store/cart'
 import Pagination from 'components/Pagination'
+import CheckoutModel from 'components/CheckoutModal'
+import { useState } from 'react'
 
-export default function Cart() {
+export type CartProps = {
+  p: boolean
+}
+
+export default function Cart({ p }: CartProps) {
   const [searchParams, setSearchParams] = useSearchParams()
   const cart = useCart()
   const products = useProducts((s) => s.byId)
+  const [modal, setModal] = useState(p)
+
+  const handleCheckout = () => {
+    setModal(true)
+  }
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
@@ -39,6 +50,7 @@ export default function Cart() {
 
   return (
     <>
+      <CheckoutModel p={modal} total={cart.total} />
       <PageTitle text="Cart" />
 
       <div className="pointer-events-auto">
@@ -185,6 +197,7 @@ export default function Cart() {
 
             <div className="mt-6">
               <a
+                onClick={handleCheckout}
                 href="#"
                 className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
               >
