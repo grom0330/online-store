@@ -62,6 +62,7 @@ export default function useCartPage() {
 
   const pageLimit = Number(searchParams.get('limit')) || 3
   const currentPage = Number(searchParams.get('page')) || 1
+
   const itemsOnPage = cart.ids.slice(
     (currentPage - 1) * pageLimit,
     (currentPage - 1) * pageLimit + pageLimit

@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
-import { StarIcon } from '@heroicons/react/20/solid'
 
 import PageTitle from 'components/PageTitle'
 import Pagination from 'components/Pagination'
 import CheckoutModal from 'components/CheckoutModal'
 import useCartPage from './useCartPage'
+import Rating from 'components/Rating'
 
 export default function Cart() {
   const p = useCartPage()
@@ -20,18 +20,21 @@ export default function Cart() {
               <p className="text-lg font-medium text-gray-900" id="slide-over-title">
                 Products
               </p>
-              <div>
-                <span className="pr-1 text-sm text-gray-700">Items on page:</span>
-                <input
-                  type="number"
-                  name="limit"
-                  min="1"
-                  max={p.cart.ids.length}
-                  onChange={p.handleLimitChange}
-                  defaultValue={p.pageLimit}
-                  className="pl-2 pr-0 py-0 m-0 w-10 text-gray-700 text-sm border-gray-700"
-                />
-              </div>
+
+              {p.cart.ids.length > 0 && (
+                <div>
+                  <span className="pr-1 text-sm text-gray-700">Items on page:</span>
+                  <input
+                    type="number"
+                    name="limit"
+                    min="1"
+                    max={p.cart.ids.length}
+                    onChange={p.handleLimitChange}
+                    defaultValue={p.pageLimit}
+                    className="pl-2 pr-0 py-0 m-0 w-10 text-gray-700 text-sm border-gray-700"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="mb-8">
@@ -69,24 +72,15 @@ export default function Cart() {
                               {p.products[id].discountPercentage}%
                             </p>
                           </div>
+
+                          <div className="flex justify-between text-base font-medium text-gray-900">
+                            <p className="mt-1 text-sm text-gray-500">{p.products[id].brand}</p>
+                          </div>
                         </div>
 
-                        <div className="flex items-center mt-2">
-                          {[0, 1, 2, 3, 4].map((rating) => (
-                            <StarIcon
-                              key={rating}
-                              className={p.ratingClassNames(
-                                Math.round(p.products[id].rating) > rating
-                                  ? 'text-purple-600'
-                                  : 'text-gray-200',
-                                'h-5 w-5 flex-shrink-0'
-                              )}
-                              aria-hidden="true"
-                            />
-                          ))}
-                        </div>
+                        <Rating value={p.products[id].rating} />
 
-                        <p className="my-2">{p.products[id].description}</p>
+                        <p className="mt-4 mb-2">{p.products[id].description}</p>
 
                         <p className="text-gray-500 my-1">Stock: {p.products[id].stock}</p>
 
@@ -127,12 +121,14 @@ export default function Cart() {
               </div>
             </div>
 
-            <Pagination
-              length={p.cart.ids.length}
-              limit={p.pageLimit}
-              current={p.currentPage}
-              onChange={p.handlePageChange}
-            />
+            {p.cart.count !== 0 && (
+              <Pagination
+                length={p.cart.ids.length}
+                limit={p.pageLimit}
+                current={p.currentPage}
+                onChange={p.handlePageChange}
+              />
+            )}
           </div>
 
           <div className="border-t border-gray-200 py-6 px-4 sm:px-6 lg:border-none">
