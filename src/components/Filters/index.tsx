@@ -11,7 +11,7 @@ function Filters() {
           className="bg-purple-500 hover:bg-purple-700 text-white font-thin py-0 px-4 rounded"
           onClick={p.onReset}
         >
-          Reset Filters
+          Reset
         </button>
         <button
           className="bg-purple-500 hover:bg-purple-700 text-white font-thin py-0 px-4 rounded"
