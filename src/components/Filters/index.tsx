@@ -6,6 +6,7 @@ function Filters() {
 
   return (
     <>
+      <button onClick={p.onReset}>Reset Filters</button>
       <h3 className="font-semibold">Category</h3>
       <div className="flex flex-col mb-4 overflow-y-scroll max-h-54 px-1">
         {p.categories.map((category) => (
@@ -14,7 +15,7 @@ function Filters() {
               type="checkbox"
               name="category"
               value={category}
-              defaultChecked={p.isChecked('category', category)}
+              checked={p.isChecked('category', category)}
               onChange={p.onFilterChange}
             />
             &nbsp;<div className="first-letter:capitalize">{category}</div>
@@ -30,8 +31,8 @@ function Filters() {
               type="checkbox"
               name="brand"
               value={brand}
+              checked={p.isChecked('brand', brand)}
               onChange={p.onFilterChange}
-              defaultChecked={p.isChecked('brand', brand)}
             />
             &nbsp;<div className="first-letter:capitalize">{brand}</div>
           </label>

@@ -61,13 +61,19 @@ export default function useFilters() {
     setSearchParams(params)
   }
 
+  const onReset = () => {
+    setSearchParams({}, { replace: true })
+    filter({})
+  }
+
   const isChecked = (fieldName: 'category' | 'brand', value?: string) => {
-    if (!value) return
-    return (query[fieldName] as string[]).includes(value)
+    if (!value) return false
+    return (query[fieldName] as string[])?.includes(value)
   }
 
   const getDefaultRangeValue = (fieldName: 'price' | 'stock', minMax: 'min' | 'max') => {
     const field = query[fieldName] as number[]
+    if (!field) return
     if (minMax === 'min') return field[0]
     if (minMax === 'max') return field[1]
   }
@@ -81,6 +87,7 @@ export default function useFilters() {
     stockRange,
     onFilterChange,
     onRangeChange,
+    onReset,
     isChecked,
     getDefaultRangeValue
   }
