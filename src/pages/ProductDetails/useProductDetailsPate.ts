@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { CartLocationState } from 'pages/Cart/useCartPage'
-
 import useCart from 'store/cart'
 import useProducts from 'store/products'
+import { filterUniqImg } from 'helpers'
+
+import { CartLocationState } from 'pages/Cart/useCartPage'
 
 export default function useProductDetailsPage() {
   const { id } = useParams()
@@ -33,6 +34,10 @@ export default function useProductDetailsPage() {
     }
 
     navigate('/cart', { state: { shouldOpenCheckoutModal: true } as CartLocationState })
+  }
+
+  if (product) {
+    product.images = product.images.filter(filterUniqImg)
   }
 
   return {
