@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useSearchParams, useLocation } from 'react-router-dom'
 import qs from 'query-string'
 
@@ -7,12 +7,10 @@ import useCart from 'store/cart'
 
 export type CartLocationState = {
   shouldOpenCheckoutModal: boolean
-  productToAdd: { id: number; price: number } | null
 }
 
 const DEFAULT_LOCATION_STATE: CartLocationState = {
-  shouldOpenCheckoutModal: false,
-  productToAdd: null
+  shouldOpenCheckoutModal: false
 }
 
 export default function useCartPage() {
@@ -22,10 +20,8 @@ export default function useCartPage() {
   const cart = useCart()
   const products = useProducts((s) => s.byId)
 
-  const locationState = (location.state as CartLocationState) || DEFAULT_LOCATION_STATE
-
   const [isCheckoutModalVisible, setCheckoutModalVisible] = useState(
-    locationState.shouldOpenCheckoutModal
+    ((location.state as CartLocationState) || DEFAULT_LOCATION_STATE).shouldOpenCheckoutModal
   )
 
   useEffect(() => {
@@ -42,10 +38,6 @@ export default function useCartPage() {
     setCheckoutModalVisible(true)
   }
 
-  function ratingClassNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
-  }
-
   const handleLimitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let query = qs.parse(searchParams.toString())
     query = { ...query, limit: e.target.value, page: '1' }
@@ -53,29 +45,51 @@ export default function useCartPage() {
     setSearchParams(params)
   }
 
-  const handlePageChange = (idx: number) => {
-    let query = qs.parse(searchParams.toString(), { parseNumbers: true })
-    query = { ...query, page: idx }
-    const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
-    setSearchParams(params)
-  }
-
-  const pageLimit = Number(searchParams.get('limit')) || 3
-  const currentPage = Number(searchParams.get('page')) || 1
-
-  const itemsOnPage = cart.ids.slice(
-    (currentPage - 1) * pageLimit,
-    (currentPage - 1) * pageLimit + pageLimit
+  const handlePageChange = useCallback(
+    (idx: number) => {
+      let query = qs.parse(searchParams.toString(), { parseNumbers: true })
+      query = { ...query, page: idx }
+      const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
+      setSearchParams(params)
+    },
+    [searchParams, setSearchParams]
   )
+
+  const pagination = useMemo(() => {
+    const pageLimit = Number(searchParams.get('limit')) || 3
+    const currentPage = Number(searchParams.get('page')) || 1
+    const totalPages = Math.ceil(cart.ids.length / pageLimit)
+
+    const itemsOnPage = cart.ids.slice(
+      (currentPage - 1) * pageLimit,
+      (currentPage - 1) * pageLimit + pageLimit
+    )
+
+    return {
+      pageLimit,
+      itemsOnPage,
+      currentPage,
+      totalPages
+    }
+  }, [searchParams, cart.ids])
+
+  useEffect(() => {
+    const page = Number(searchParams.get('page'))
+
+    if (page > 0 && page > pagination.totalPages) {
+      handlePageChange(pagination.totalPages)
+    }
+
+    if (Number(searchParams.get('page')) <= 0) {
+      handlePageChange(1)
+    }
+  }, [searchParams, pagination.currentPage, pagination.totalPages, handlePageChange])
 
   return {
     cart,
-    pageLimit,
     products,
-    itemsOnPage,
-    currentPage,
+    ...pagination,
     isCheckoutModalVisible,
-    ratingClassNames,
     handleLimitChange,
     handlePageChange,
     handleCheckout
