@@ -6,7 +6,21 @@ function Filters() {
 
   return (
     <>
-      <button onClick={p.onReset}>Reset Filters</button>
+      <div className="flex gap-2 mb-2">
+        <button
+          className="bg-purple-500 hover:bg-purple-700 text-white font-thin py-0 px-4 rounded"
+          onClick={p.onReset}
+        >
+          Reset Filters
+        </button>
+        <button
+          className="bg-purple-500 hover:bg-purple-700 text-white font-thin py-0 px-4 rounded"
+          onClick={p.onCopy}
+        >
+          {p.isSearchParamsCopied ? 'Copied' : 'Copy'}
+        </button>
+      </div>
+
       <h3 className="font-semibold">Category</h3>
       <div className="flex flex-col mb-4 overflow-y-scroll max-h-54 px-1">
         {p.categories.map((category) => (

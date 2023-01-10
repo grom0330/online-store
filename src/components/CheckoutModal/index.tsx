@@ -5,7 +5,6 @@ import visa from '../../assets/images/visa.png'
 import masterCard from '../../assets/images/MasterCard.png'
 import maestro from '../../assets/images/maestro.png'
 import americanExpress from '../../assets/images/american-express.png'
-import PageTitle from 'components/PageTitle'
 import { useNavigate } from 'react-router'
 
 const imagesPath = [cardImg, visa, masterCard, maestro, americanExpress]
@@ -60,7 +59,7 @@ export default function CheckoutModel({ p, total }: CheckoutModelProps) {
     >
       <div className="absolute top-1/4 items-center justify-center w-64 h-52 bg-white flex flex-col gap-6">
         <img className="w-20 h-20" src={trueImg} />
-        <PageTitle text={'Order is processed'}></PageTitle>
+        <h2 className="mb-5 text-2xl font-bold tracking-tight text-gray-900">Order is proceed</h2>
       </div>
       <div className={form ? 'flex items-center w-2/5 z-50' : 'hidden'}>
         <form

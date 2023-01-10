@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import PageTitle from 'components/PageTitle'
 import Pagination from 'components/Pagination'
 import CheckoutModal from 'components/CheckoutModal'
 import useCartPage from './useCartPage'
@@ -11,14 +10,12 @@ export default function Cart() {
 
   return (
     <>
-      <PageTitle text="Cart" />
-
       <div className="pointer-events-auto">
         <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl lg:grid lg:grid-cols-2">
           <div className="flex-1 overflow-y-auto py-6 px-4 sm:px-6">
             <div className="flex items-center justify-between border-b pb-2 mb-2">
               <p className="text-lg font-medium text-gray-900" id="slide-over-title">
-                Products
+                Products in Cart
               </p>
 
               {p.cart.ids.length > 0 && (

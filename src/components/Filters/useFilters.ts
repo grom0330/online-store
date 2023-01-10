@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import qs from 'query-string'
 
@@ -6,8 +6,6 @@ import useProducts from 'store/products'
 
 export default function useFilters() {
   const [search, setSearchParams] = useSearchParams()
-
-  const query = qs.parse(search.toString(), { arrayFormat: 'comma', parseNumbers: true })
 
   const [categories, brands, priceRange, stockRange, filter] = useProducts((s) => [
     s.categories,
@@ -23,6 +21,8 @@ export default function useFilters() {
   }, [])
 
   const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = qs.parse(search.toString(), { arrayFormat: 'comma' })
+
     if (typeof query[e.target.name] === 'string') {
       query[e.target.name] = [query[e.target.name] as string]
     }
@@ -49,6 +49,7 @@ export default function useFilters() {
   }
 
   const onRangeChange = (p: { name: string; min: number; max: number }) => {
+    const query = qs.parse(search.toString(), { arrayFormat: 'comma', parseNumbers: true })
     query[p.name] = [p.min, p.max]
 
     const params = qs.stringify(query, {
@@ -66,13 +67,39 @@ export default function useFilters() {
     filter({})
   }
 
+  const [isSearchParamsCopied, setSearchParamsCopied] = useState(false)
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setSearchParamsCopied(() => true)
+      setTimeout(() => {
+        setSearchParamsCopied(false)
+      }, 3000)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   const isChecked = (fieldName: 'category' | 'brand', value?: string) => {
     if (!value) return false
-    return (query[fieldName] as string[])?.includes(value)
+
+    const query = qs.parse(search.toString(), { arrayFormat: 'comma' })
+    let categoryArr = query[fieldName] as string[]
+
+    if (typeof categoryArr === 'string') {
+      categoryArr = [categoryArr] as string[]
+    }
+
+    const result = categoryArr?.includes(value) || false
+
+    return result
   }
 
   const getDefaultRangeValue = (fieldName: 'price' | 'stock', minMax: 'min' | 'max') => {
+    const query = qs.parse(search.toString(), { arrayFormat: 'comma', parseNumbers: true })
     const field = query[fieldName] as number[]
+
     if (!field) return
     if (minMax === 'min') return field[0]
     if (minMax === 'max') return field[1]
@@ -82,13 +109,14 @@ export default function useFilters() {
     categories,
     brands,
     search,
-    query,
     priceRange,
     stockRange,
+    isSearchParamsCopied,
     onFilterChange,
     onRangeChange,
     onReset,
     isChecked,
-    getDefaultRangeValue
+    getDefaultRangeValue,
+    onCopy
   }
 }
