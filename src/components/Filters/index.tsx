@@ -32,7 +32,13 @@ function Filters() {
               checked={p.isChecked('category', category)}
               onChange={p.onFilterChange}
             />
-            &nbsp;<div className="first-letter:capitalize">{category}</div>
+            <div className="ml-1 first-letter:capitalize whitespace-nowrap text-ellipsis overflow-hidden">
+              {category}
+            </div>
+            <div className="flex ml-auto">
+              <div>{p.products.filter((p) => p.category === category).length}</div>/
+              <div>{p.cache.filter((p) => p.category === category).length}</div>
+            </div>
           </label>
         ))}
       </div>
@@ -48,7 +54,13 @@ function Filters() {
               checked={p.isChecked('brand', brand)}
               onChange={p.onFilterChange}
             />
-            &nbsp;<div className="first-letter:capitalize">{brand}</div>
+            <div className="ml-1 first-letter:capitalize whitespace-nowrap text-ellipsis overflow-hidden">
+              {brand}
+            </div>
+            <div className="flex ml-auto">
+              <div>{p.products.filter((p) => p.brand.toLowerCase() === brand).length}</div>/
+              <div>{p.cache.filter((p) => p.brand.toLowerCase() === brand).length}</div>
+            </div>
           </label>
         ))}
       </div>

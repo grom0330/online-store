@@ -17,7 +17,7 @@ import {
 type State = {
   status: 'loading' | 'ok' | 'error'
   error: string
-  cashe: Product[]
+  cache: Product[]
   products: Product[]
   categories: string[]
   brands: string[]
@@ -33,7 +33,7 @@ const useProducts = create<State>()(
     (set, get) => ({
       status: 'loading',
       error: '',
-      cashe: [],
+      cache: [],
       products: [],
       categories: [],
       brands: [],
@@ -41,7 +41,7 @@ const useProducts = create<State>()(
       stockRange: { min: 0, max: 0 },
       byId: {},
       filter: (data) => {
-        let result = get().cashe
+        let result = get().cache
 
         if (data.search) {
           result = search(result, data.search as string)
@@ -81,7 +81,7 @@ const useProducts = create<State>()(
             return acc
           }, {} as { [id: number]: Product })
 
-          set({ status: 'ok', cashe: resp.products, byId, products: resp.products, ...meta })
+          set({ status: 'ok', cache: resp.products, byId, products: resp.products, ...meta })
         } catch (e) {
           set({
             status: 'error',

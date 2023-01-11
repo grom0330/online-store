@@ -7,16 +7,10 @@ import useProducts from 'store/products'
 export default function useFilters() {
   const [search, setSearchParams] = useSearchParams()
 
-  const [categories, brands, priceRange, stockRange, filter] = useProducts((s) => [
-    s.categories,
-    s.brands,
-    s.priceRange,
-    s.stockRange,
-    s.filter
-  ])
+  const products = useProducts()
 
   useEffect(() => {
-    filter(qs.parse(search.toString(), { arrayFormat: 'comma', parseNumbers: true }))
+    products.filter(qs.parse(search.toString(), { arrayFormat: 'comma', parseNumbers: true }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -44,7 +38,7 @@ export default function useFilters() {
       arrayFormat: 'comma'
     })
 
-    filter(query)
+    products.filter(query)
     setSearchParams(params)
   }
 
@@ -58,13 +52,13 @@ export default function useFilters() {
       arrayFormat: 'comma'
     })
 
-    filter(query)
+    products.filter(query)
     setSearchParams(params)
   }
 
   const onReset = () => {
     setSearchParams({}, { replace: true })
-    filter({})
+    products.filter({})
   }
 
   const [isSearchParamsCopied, setSearchParamsCopied] = useState(false)
@@ -106,11 +100,8 @@ export default function useFilters() {
   }
 
   return {
-    categories,
-    brands,
     search,
-    priceRange,
-    stockRange,
+    ...products,
     isSearchParamsCopied,
     onFilterChange,
     onRangeChange,
