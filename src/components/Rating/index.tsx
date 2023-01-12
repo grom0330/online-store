@@ -10,7 +10,6 @@ const RANK = [1, 2, 3, 4, 5]
 
 export default function Rating(p: Props) {
   const roundedValue = Math.round(p.value)
-  console.log(roundedValue)
 
   return (
     <div className="flex items-center">
