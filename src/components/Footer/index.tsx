@@ -1,8 +1,7 @@
-import React from 'react'
 import RsLogo from '../../assets/images/rs_school_js.svg'
 import GitLogo from '../../assets/images/github-logo.svg'
 
-const Footer = () => {
+export function Footer() {
   return (
     <footer className="mx-auto max-w-2xl py-2 px-2 sm:py-5 sm:px-4 lg:max-w-7xl lg:px-6 flex justify-between items-center m-auto border-t-1 border-t">
       <a>
@@ -19,5 +18,3 @@ const Footer = () => {
     </footer>
   )
 }
-
-export default Footer

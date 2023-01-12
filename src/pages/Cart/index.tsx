@@ -5,6 +5,8 @@ import CheckoutModal from 'components/CheckoutModal'
 import useCartPage from './useCartPage'
 import Rating from 'components/Rating'
 
+import { ROUTES } from '../../constants'
+
 export default function Cart() {
   const p = useCartPage()
 
@@ -44,7 +46,7 @@ export default function Cart() {
                       <div className="mr-2 text-gray-500">{p.cart.ids.indexOf(id) + 1}</div>
 
                       <Link
-                        to={`/product-details/${id}`}
+                        to={`${ROUTES.productDetails}/${id}`}
                         className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200"
                       >
                         <img
@@ -58,7 +60,9 @@ export default function Cart() {
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <Link to={`/product-details/${id}`}>{p.products[id].title}</Link>
+                              <Link to={`${ROUTES.productDetails}/${id}`}>
+                                {p.products[id].title}
+                              </Link>
                             </h3>
                             <p className="ml-4">${p.products[id].price * p.cart.byId[id].count}</p>
                           </div>

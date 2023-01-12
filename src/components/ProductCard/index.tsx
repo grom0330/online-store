@@ -5,6 +5,8 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { Product } from 'dummyjson-api/models'
 import useCart from 'store/cart'
 
+import { ROUTES } from '../../constants'
+
 function ProductCard(p: Product) {
   const cart = useCart()
 
@@ -22,7 +24,7 @@ function ProductCard(p: Product) {
         <div className="mt-4 flex justify-between">
           <div>
             <h3 className="text-sm text-gray-700">
-              <Link to={`product-details/${p.id}`}>
+              <Link to={`${ROUTES.productDetails}/${p.id}`}>
                 <span aria-hidden="true" className="absolute inset-0"></span>
                 {p.title}
               </Link>
