@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import Pagination from 'components/Pagination'
@@ -9,6 +10,35 @@ import { ROUTES } from '../../constants'
 
 export default function Cart() {
   const p = useCartPage()
+
+  const [discount, setDiscount] = useState(0)
+  const [discountArr, setDiscountArr] = useState<number[]>([])
+  const [discountBool, setDiscountBool] = useState(-1)
+  const discountPromo = ['RSS', 'EPM']
+  const discountText = ['Rolling Scopes School', 'EPAM Systems']
+  const discountPercent = [10, 10]
+
+  const handleDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let i = -1
+    discountPromo.map((item, index) => {
+      if (item == e.target.value) {
+        i = index
+      }
+    })
+    if (i !== -1) setDiscountBool(i)
+    else setDiscountBool(-1)
+  }
+
+  const handleDiscountAdd = () => {
+    setDiscountArr((prev) => [...prev, discountBool])
+    setDiscount((prev) => prev + discountPercent[discountBool === -1 ? 0 : discountBool])
+  }
+
+  const handleDiscountDelete = (item: number) => {
+    setDiscountArr((prev) => prev.filter((elem) => item !== elem))
+    setDiscount((prev) => prev - discountPercent[discountBool === -1 ? 0 : discountBool])
+    if (discount == 0) return 1
+  }
 
   return (
     <>
@@ -132,7 +162,7 @@ export default function Cart() {
             )}
           </div>
 
-          <div className="border-t border-gray-200 py-6 px-4 sm:px-6 lg:border-none">
+          <div className="flex flex-col border-t border-gray-200 py-6 px-4 sm:px-6 lg:border-none">
             <p className="text-lg font-medium text-gray-900" id="slide-over-title">
               Order summary
             </p>
@@ -141,15 +171,77 @@ export default function Cart() {
               <p>{p.cart.count}</p>
             </div>
             <div className="flex justify-between text-base font-medium text-gray-900 py-2">
+              <p className={discountArr.length !== 0 ? 'line-through' : ''}>Subtotal</p>
+              <p className={discountArr.length !== 0 ? 'line-through' : ''}>${p.cart.total}</p>
+            </div>
+            <div
+              className={
+                discountArr.length !== 0
+                  ? 'flex justify-between text-base font-medium text-gray-900 py-2'
+                  : 'hidden'
+              }
+            >
               <p>Subtotal</p>
-              <p>${p.cart.total}</p>
+              <p>${p.cart.total - p.cart.total * (discount / 100)}</p>
             </div>
 
-            <div className="flex justify-between text-base font-medium text-gray-900 py-2">
+            <div
+              className={
+                discountArr.length !== 0
+                  ? 'flex self-center w-4/6 flex-col border-solid first-letter border-violet-900 border-2 py-2 my-2'
+                  : 'hidden'
+              }
+            >
+              <div className="flex grow-0 justify-center text-xl font-medium text-gray-900 py-2">
+                Applied codes
+              </div>
+
+              {discountArr.map((item, index) => (
+                <div
+                  className="flex justify-center text-base font-medium text-gray-500 py-1"
+                  key={index}
+                >
+                  {discountText[index]} - {discountPercent[index]}% {' - '}
+                  <button
+                    onClick={() => handleDiscountDelete(item)}
+                    className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-2 mx-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-between items-center text-base font-medium text-gray-900 py-2">
               <p className="mt-0.5 text-sm text-gray-500">
-                Shipping and taxes calculated at checkout.
+                Shipping and taxes calculated at checkout
               </p>
-              <input type="text" placeholder="Enter promo code: RSS" />
+              <input
+                onChange={(e) => handleDiscount(e)}
+                type="text"
+                placeholder="Enter promo code: RSS"
+              />
+            </div>
+
+            <div className="py-2">
+              {discountPromo.map((item, index) => (
+                <div
+                  className={
+                    discountBool === index && !discountArr.includes(index)
+                      ? 'flex justify-end text-base font-medium text-gray-500 py-1'
+                      : 'hidden'
+                  }
+                  key={index}
+                >
+                  {discountText[index]} - {discountPercent[index]}% {' - '}
+                  <button
+                    onClick={() => handleDiscountAdd()}
+                    className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-2 mx-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                  >
+                    Add
+                  </button>
+                </div>
+              ))}
             </div>
 
             <div className="mt-6">
