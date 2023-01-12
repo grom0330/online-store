@@ -1,19 +1,12 @@
-import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { StarIcon } from '@heroicons/react/20/solid'
+import { Link } from 'react-router-dom'
 
-import useCart from 'store/cart'
-import useProducts from 'store/products'
+import Rating from 'components/Rating'
+import useProductDetailsPage from './useProductDetailsPate'
 
 export default function ProductDetails() {
-  const { id } = useParams()
+  const p = useProductDetailsPage()
 
-  const product = useProducts((s) => s.byId[Number(id)])
-  const cart = useCart()
-
-  const [mainImgIdx, setMainImgIdx] = useState(0)
-
-  if (!product) {
+  if (!p.product) {
     return <p>Product not found.</p>
   }
 
@@ -21,25 +14,39 @@ export default function ProductDetails() {
     <>
       <nav aria-label="Breadcrumb" className="mb-3">
         <ol role="list" className="flex space-x-2">
-          <LiCategory text="store" to="/" />
-          <LiCategory text={product.category} />
-          <LiCategory text={product.brand} />
-          <li className="text-sm font-medium text-gray-500 hover:text-gray-600">{product.title}</li>
+          <Li>
+            <Link to="/" className="mr-2 text-sm font-medium text-gray-900">
+              store
+            </Link>
+          </Li>
+          <Li>
+            <div className="mr-2 text-sm font-medium text-gray-900">
+              {p.product.category.toLowerCase()}
+            </div>
+          </Li>
+          <Li>
+            <div className="mr-2 text-sm font-medium text-gray-900">
+              {p.product.brand.toLowerCase()}
+            </div>
+          </Li>
+          <li className="text-sm font-medium text-gray-500 hover:text-gray-600">
+            {p.product.title}
+          </li>
         </ol>
       </nav>
 
       <div className="grid grid-cols-1 gap-2">
         <div className="flex justify-center">
-          <img className="h-80 object-cover" src={product.images[mainImgIdx]} />
+          <img className="h-80 object-cover" src={p.product.images[p.mainImgIdx]} />
         </div>
         <div className="flex gap-2 justify-center">
-          {product.images.map((imgSrc, idx) => {
+          {p.product.images.map((imgSrc, idx) => {
             return (
               <img
                 key={idx}
                 src={imgSrc}
                 className="h-20 w-20 object-cover object-center cursor-pointer"
-                onClick={() => setMainImgIdx(idx)}
+                onClick={() => p.setMainImgIdx(idx)}
               />
             )
           })}
@@ -49,58 +56,38 @@ export default function ProductDetails() {
       <div className="max-w-2xl pt-10 pb-16 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:pt-16 lg:pb-24">
         <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            {product.title}
+            {p.product.title}
           </h1>
         </div>
 
         <div className="mt-4 lg:row-span-3 lg:mt-0">
           <h2 className="sr-only">Product information</h2>
-          <p className="text-3xl tracking-tight text-gray-900">${product.price}</p>
-          {/* Reviews */}
+          <p className="text-3xl tracking-tight text-gray-900">${p.product.price}</p>
+
           <div className="mt-4">
-            <div className="flex items-center">
-              <div className="flex items-center">
-                {[0, 1, 2, 3, 4].map((rating) => (
-                  <StarIcon
-                    key={rating}
-                    className={classNames(
-                      Math.round(product.rating) > rating ? 'text-purple-600' : 'text-gray-200',
-                      'h-5 w-5 flex-shrink-0'
-                    )}
-                    aria-hidden="true"
-                  />
-                ))}
-              </div>
-              <div className="ml-2">{product.rating}</div>
-            </div>
+            <Rating value={p.product.rating} />
           </div>
 
-          {!cart.byId[product.id] && (
-            <Button
-              text="Add to Cart"
-              onClick={() => cart.add({ id: product.id, price: product.price })}
-            />
-          )}
+          {!p.cart.byId[p.product.id] && <Button text="Add to Cart" onClick={p.handleAddProduct} />}
 
-          {!!cart.byId[product.id] && (
-            <Button text="Remove from Cart" onClick={() => cart.remove(product.id)} />
+          {!!p.cart.byId[p.product.id] && (
+            <Button text="Remove from Cart" onClick={p.handleRemoveProduct} />
           )}
 
           <button
-            type="submit"
+            onClick={p.handleBuyNow}
             className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             Buy now
           </button>
         </div>
 
-        {/* Description and details */}
         <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pr-8">
           <div>
             <h3 className="sr-only">Description</h3>
 
             <div className="space-y-6">
-              <p className="text-base text-gray-900">{product.description}</p>
+              <p className="text-base text-gray-900">{p.product.description}</p>
             </div>
           </div>
 
@@ -111,16 +98,16 @@ export default function ProductDetails() {
               <ol role="list" className=" space-y-2 text-base">
                 <li className="text-gray-400">
                   Discount Percentage:{' '}
-                  <span className="text-gray-700">{product.discountPercentage}%</span>
+                  <span className="text-gray-700">{p.product.discountPercentage}%</span>
                 </li>
                 <li className="text-gray-400">
-                  Stock: <span className="text-gray-700">{product.stock}</span>
+                  Stock: <span className="text-gray-700">{p.product.stock}</span>
                 </li>
                 <li className="text-gray-400">
-                  Brand: <span className="text-gray-700">{product.brand}</span>
+                  Brand: <span className="text-gray-700">{p.product.brand}</span>
                 </li>
                 <li className="text-gray-400">
-                  Category: <span className="text-gray-700">{product.category}</span>
+                  Category: <span className="text-gray-700">{p.product.category}</span>
                 </li>
               </ol>
             </div>
@@ -131,20 +118,11 @@ export default function ProductDetails() {
   )
 }
 
-function LiCategory(p: { text: string; to?: string }) {
+function Li(p: { children: React.ReactNode }) {
   return (
     <li>
       <div className="flex items-center">
-        {!p.to && (
-          <div className="mr-2 text-sm font-medium text-gray-900">{p.text.toLowerCase()}</div>
-        )}
-
-        {p.to !== undefined && (
-          <Link to={p.to} className="mr-2 text-sm font-medium text-gray-900">
-            {p.text.toLowerCase()}
-          </Link>
-        )}
-
+        {p.children}
         <svg
           width={16}
           height={20}
@@ -171,8 +149,4 @@ function Button(p: { text: string; onClick(): void }) {
       {p.text}
     </button>
   )
-}
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
 }

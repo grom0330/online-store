@@ -2,10 +2,13 @@ import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { StarIcon } from '@heroicons/react/20/solid'
 
+import { Button } from 'components/Button'
 import { Product } from 'dummyjson-api/models'
 import useCart from 'store/cart'
 
-function ProductCard(p: Product) {
+import { ROUTES } from '../../constants'
+
+function ProductCardComponent(p: Product) {
   const cart = useCart()
 
   return (
@@ -22,7 +25,7 @@ function ProductCard(p: Product) {
         <div className="mt-4 flex justify-between">
           <div>
             <h3 className="text-sm text-gray-700">
-              <Link to={`product-details/${p.id}`}>
+              <Link to={`${ROUTES.productDetails}/${p.id}`}>
                 <span aria-hidden="true" className="absolute inset-0"></span>
                 {p.title}
               </Link>
@@ -52,15 +55,4 @@ function ProductCard(p: Product) {
   )
 }
 
-export default memo(ProductCard)
-
-function Button(p: { text: string; onClick(): void }) {
-  return (
-    <button
-      className="px-4 py-1 block ml-auto text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
-      onClick={p.onClick}
-    >
-      {p.text}
-    </button>
-  )
-}
+export const ProductCard = memo(ProductCardComponent)
