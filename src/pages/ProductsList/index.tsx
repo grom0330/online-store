@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import Filters from 'components/Filters'
 import Controls from 'components/Controls'
-import ProductCard from 'components/ProductCard'
+import { ProductCard } from 'components/ProductCard'
 
 import useProducts from 'store/products'
 
