@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useEffect, useState } from 'react'
-import { useSearchParams, useLocation } from 'react-router-dom'
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import qs from 'query-string'
 
 import useProducts from 'store/products'
@@ -15,6 +15,7 @@ const DEFAULT_LOCATION_STATE: CartLocationState = {
 
 export default function useCartPage() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const cart = useCart()
@@ -50,9 +51,9 @@ export default function useCartPage() {
       let query = qs.parse(searchParams.toString(), { parseNumbers: true })
       query = { ...query, page: idx }
       const params = qs.stringify(query, { skipEmptyString: true, skipNull: true })
-      setSearchParams(params)
+      navigate(`/cart?${params}`, { replace: true })
     },
-    [searchParams, setSearchParams]
+    [searchParams, navigate]
   )
 
   const pagination = useMemo(() => {

@@ -21,7 +21,7 @@ export function Header() {
           Total: <span className="text-purple-600">${total}</span>
         </div>
 
-        <Link to={ROUTES.cart} className="flex items-center">
+        <Link to="cart" className="flex items-center">
           <ShoppingCartIcon width={24} height={24} />
 
           <div className="text-purple-600 text-1xl font-normal">{count}</div>
