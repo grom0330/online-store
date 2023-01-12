@@ -10,6 +10,7 @@ const RANK = [1, 2, 3, 4, 5]
 
 export default function Rating(p: Props) {
   const roundedValue = Math.round(p.value)
+  console.log(roundedValue)
 
   return (
     <div className="flex items-center">
@@ -19,7 +20,7 @@ export default function Rating(p: Props) {
             key={rating}
             className={cx(
               {
-                'text-purple-600': roundedValue > rating,
+                'text-purple-600': roundedValue >= rating,
                 'text-gray-200': roundedValue < rating
               },
               'h-5 w-5 flex-shrink-0'
